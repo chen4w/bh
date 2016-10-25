@@ -30,8 +30,8 @@ export default class Task extends Component {
      return { muiTheme: getMuiTheme(baseTheme) };
   }
   render() {
-    var imgsrc = "/pics/upload/"+this.props.task._id+".png";
-    var depth = this.props.bsel?5:1;
+    let imgsrc = "/pics/upload/"+this.props.task._id+".png";
+    let depth = this.props.bsel?5:1;
     return (
        <Paper style={style} zDepth={depth}  
        onTouchTap={this.props.par.toggleSel.bind(this.props.par,this.props.pos)}>
