@@ -15,14 +15,14 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 const styles = {
   checkbox: {
-    marginTop: 12,
+    marginTop: 18,
     marginLeft: 12,
   },
   label:{
     whiteSpace: "nowrap"
   },
   button:{margin: 12,},
-  dtpicker:{marginLeft: 20,width:100}
+  dtpicker:{marginTop: 5,marginLeft: 20,width:100}
 }; 
 // App component - represents the whole app
 export default class App extends Component {
@@ -38,23 +38,42 @@ export default class App extends Component {
       { _id: 5, text: 'This is task 5' },
       { _id: 6, text: 'This is task 6' },
     ],
+    bSelAll:false,
     };
   }
   getChildContext() {
      return { muiTheme: getMuiTheme(baseTheme) };
   }
   toggleSelAll(evt, checked) {
-    var clds = this.props.children;
-    console.log(clds);
+    let pics = this.state.pics;
+    for(const p in pics){
+      pics[p].bsel = checked;
+    }
+    this.setState({pics:pics});
+    this.setState({bSelAll:checked});
+  }
+  toggleSel(pos) {
+    let pics = this.state.pics;
+    let pic = pics[pos];
+    pic.bsel = !pic.bsel;
+    this.setState({pics:pics});
+    this.setState({bSelAll:true});
+    for(const p in pics){
+      if(!pics[p].bsel){
+       this.setState({bSelAll:false});
+        break;
+      }
+    }
   }
   
   getTasks() {
-    return this.state.pics;
+    let pics = this.state.pics;
+    return pics;
   }
  
   renderTasks() {
-    return this.getTasks().map((task) => (
-      <Task key={task._id} task={task}/>
+    return this.getTasks().map((task,i) => (
+      <Task key={task._id} task={task} bsel={task.bsel} par={this} pos={i}/>
     ));
   }
  
@@ -75,6 +94,7 @@ export default class App extends Component {
         <ToolbarSeparator />
           <Checkbox
             label="全选"
+            checked={this.state.bSelAll}
             onCheck={this.toggleSelAll.bind(this)}
             style={styles.checkbox}
             labelStyle={styles.label}

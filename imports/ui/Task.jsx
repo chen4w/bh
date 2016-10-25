@@ -23,22 +23,18 @@ export default class Task extends Component {
     super(props);
  
     this.state = {
-      bSel: false,
+      bSel: props.bsel,
     };
   }
   getChildContext() {
      return { muiTheme: getMuiTheme(baseTheme) };
   }
-  toggleSel() {
-    this.setState({
-      bSel: !this.state.bSel,
-    });
-  }
   render() {
     var imgsrc = "/pics/upload/"+this.props.task._id+".png";
-    var depth = this.state.bSel?5:1;
+    var depth = this.props.bsel?5:1;
     return (
-       <Paper style={style} zDepth={depth}  onTouchTap={this.toggleSel.bind(this)}>
+       <Paper style={style} zDepth={depth}  
+       onTouchTap={this.props.par.toggleSel.bind(this.props.par,this.props.pos)}>
        <img width="200" src={imgsrc}/>
        </Paper>
       
