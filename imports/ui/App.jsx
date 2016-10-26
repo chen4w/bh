@@ -6,10 +6,17 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import Checkbox from 'material-ui/Checkbox';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import Drawer from 'material-ui/Drawer';
+import IconButton from 'material-ui/IconButton';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
+import {List, ListItem} from 'material-ui/List';
+import ActionGrade from 'material-ui/svg-icons/action/grade';
+import ContentInbox from 'material-ui/svg-icons/content/inbox';
+import ContentDrafts from 'material-ui/svg-icons/content/drafts';
+import ContentSend from 'material-ui/svg-icons/content/send';
+import Subheader from 'material-ui/Subheader';
 import RaisedButton from 'material-ui/RaisedButton';
-import DatePicker from 'material-ui/DatePicker';
-import Chip from 'material-ui/Chip';
 
 import Task from './Task.jsx';
 
@@ -18,6 +25,11 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
  
 
 const styles = {
+  toolbar:{
+    position: 'fixed',
+    top: 0,
+    width: '100%'
+  },
   checkbox: {
     marginTop: 18,
     marginLeft: 12,
@@ -48,13 +60,16 @@ export default class App extends Component {
       bSelAll:false,
       dt_default:new Date(),
       openDelete:false,
-      sels:[]
+      sels:[],
+      openFolder:false
     };
   }
   getChildContext() {
      return { muiTheme: getMuiTheme(baseTheme) };
   }
-
+  handleFolder(){
+    this.setState({openFolder:!this.state.openFolder});
+  }
   handleDelete(){
     this.setState({openDelete: true});
   };
@@ -118,6 +133,52 @@ export default class App extends Component {
 
     return (
       <div id="container" className="container">
+        <Drawer 
+          open={this.state.openFolder} 
+          onRequestChange={(open) => this.setState({openFolder:open})}
+          docked={false}>
+
+
+          <List>
+            <Subheader>请选择文件目录</Subheader>
+            <ListItem primaryText="Sent mail" leftIcon={<ContentSend />} />
+            <ListItem primaryText="Drafts" leftIcon={<ContentDrafts />} />
+            <ListItem
+              primaryText="Inbox"
+              leftIcon={<ContentInbox />}
+              initiallyOpen={true}
+              primaryTogglesNestedList={true}
+              nestedItems={[
+                <ListItem
+                  key={1}
+                  primaryText="Starred"
+                  leftIcon={<ActionGrade />}
+                />,
+                <ListItem
+                  key={2}
+                  primaryText="Sent Mail"
+                  leftIcon={<ContentSend />}
+                  disabled={true}
+                  nestedItems={[
+                    <ListItem key={1} primaryText="Drafts" leftIcon={<ContentDrafts />} />,
+                  ]}
+                />,
+                <ListItem
+                  key={3}
+                  primaryText="Inbox"
+                  leftIcon={<ContentInbox />}
+                  open={this.state.open}
+                  onNestedListToggle={this.handleNestedListToggle}
+                  nestedItems={[
+                    <ListItem key={1} primaryText="Drafts" leftIcon={<ContentDrafts />} />,
+                  ]}
+                />,
+              ]}
+            />
+          </List>
+
+        </Drawer>
+
         <Dialog
             actions={actions}
             modal={false}
@@ -127,14 +188,13 @@ export default class App extends Component {
             确定删除选中的{this.state.sels.length}项？
           </Dialog>
 
-    <Toolbar>
+    <Toolbar style={styles.toolbar}>
         <ToolbarGroup firstChild={true}>
-         <DatePicker hintText="选择目录" 
-          autoOk={true}
-          defaultDate={this.state.dt_default}
-          
-          style={styles.dtpicker}
-         />
+        <IconButton 
+          onTouchTap={this.handleFolder.bind(this)}
+          tooltip="2016-10-27/pending"
+        ><MoreVertIcon />
+        </IconButton>
         <label
          style={styles.label}
         >
