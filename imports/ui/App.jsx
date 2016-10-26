@@ -47,7 +47,8 @@ const styles = {
 export default class App extends Component {
   constructor(props) {
     super(props);
- 
+    const listId = this.props.params.id;
+    console.log('ssss'+listId);
     this.state = {
       pics: [
         { _id: 1, text: 'This is task 1' },
