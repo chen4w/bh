@@ -82,6 +82,10 @@ export default class App extends Component {
     }
     this.setState({pics:pics});
     this.setState({bSelAll:checked});
+    if(checked)
+      this.setState({sels:pics});
+    else
+      this.setState({sels:[]});
   }
   toggleSel(pos) {
     let pics = this.state.pics;

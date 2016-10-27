@@ -1,0 +1,11 @@
+{
+  "public": {
+    "pics": {
+      "root_url": "/img/"
+   }
+  },
+  "pics": {
+    "root": "/Users/c4w/git/bh/public/pics",
+    "root_url": "/img/"
+  }
+}
