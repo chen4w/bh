@@ -69,6 +69,13 @@ export default class App extends Component {
      return { muiTheme: getMuiTheme(baseTheme) };
   }
   handleFolder(){
+    Meteor.call('folder.list', '中文次2222',function(error, result){
+        if(error){
+            console.log(error);
+        } else {
+            console.log(result);
+        }
+    });
     this.setState({openFolder:!this.state.openFolder});
   }
   handleDelete(){
