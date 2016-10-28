@@ -5,11 +5,12 @@ import {cf} from './fp.js';
 
 Meteor.methods({
     //list all subfolder
-  'folder.list'(fpath) {
+  'folder.listfolder'() {
+    return cf.listFolder();
+  },
+  'folder.getpics'(fpath) {
     check(fpath, String); 
-    return cf.list(fpath);
+    return cf.getPics(fpath);
   },
-  'folder.listAll'() {
-    return cf.listAll();
-  },
+
 });

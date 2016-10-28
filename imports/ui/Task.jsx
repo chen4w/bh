@@ -30,7 +30,7 @@ export default class Task extends Component {
      return { muiTheme: getMuiTheme(baseTheme) };
   }
   render() {
-    let imgsrc = "/pics/upload/"+this.props.task._id+".png";
+    let imgsrc = "/pics/upload/"+this.props.pic;
     let depth = this.props.bsel?5:1;
     return (
        <Paper style={style} zDepth={depth}  
@@ -45,7 +45,7 @@ export default class Task extends Component {
 Task.propTypes = {
   // This component gets the task to display through a React prop.
   // We can use propTypes to indicate it is required
-  task: PropTypes.object.isRequired,
+  pic: PropTypes.string.isRequired,
 };
 
 Task.childContextTypes = {

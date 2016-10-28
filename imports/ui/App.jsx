@@ -71,14 +71,7 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pics: [
-        { _id: 1, text: 'This is task 1' },
-        { _id: 2, text: 'This is task 2' },
-        { _id: 3, text: 'This is task 3' },
-        { _id: 4, text: 'This is task 4' },
-        { _id: 5, text: 'This is task 5' },
-        { _id: 6, text: 'This is task 6' },
-      ],
+      pics: [{fn:"1.png"}, {fn:"2.png"}],
       bSelAll:false,
       dt_default:new Date(),
       openDelete:false,
@@ -87,17 +80,26 @@ export default class App extends Component {
       folders:[]
     };
     var me=this;
-    Meteor.call('folder.listAll', function(error, result){
+    Meteor.call('folder.listfolder', function(error, result){
         if(error){
             console.log(error);
         } else {
-            console.log(result);
             me.setState({folders:result});
         }
     });
   }
   getChildContext() {
      return { muiTheme: getMuiTheme(baseTheme) };
+  }
+  onDirChange(p1,p2){
+    let me = this;
+    Meteor.call('folder.getpics', p1, function(error, result){
+        if(error){
+            console.log(error);
+        } else {
+            me.setState({pics:result});
+        }
+    });
   }
   handleFolder(){
     this.setState({openFolder:!this.state.openFolder});
@@ -136,19 +138,14 @@ export default class App extends Component {
     this.setState({bSelAll:bSelAll});
     this.setState({sels:sels});
   }
-  
-  getTasks() {
-    let pics = this.state.pics;
-    return pics;
-  }
- 
+   
   handleCloseDelete(){
     this.setState({openDelete: false});
   };
 
   renderTasks() {
-    return this.getTasks().map((task,i) => (
-      <Task key={task._id} task={task} bsel={task.bsel} par={this} pos={i}/>
+    return this.state.pics.map((pic,i) => (
+      <Task key={i} pic={pic.fn} bsel={pic.bsel} par={this} pos={i}/>
     ));
   }
  
@@ -186,6 +183,8 @@ export default class App extends Component {
       filter={AutoComplete.fuzzyFilter}
       dataSource={this.state.folders}
       maxSearchResults={5}
+      onNewRequest={this.onDirChange.bind(this)}
+      searchText={'2016'}
       style={styles.auto_complete}
     />
         
