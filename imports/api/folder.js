@@ -9,4 +9,7 @@ Meteor.methods({
     check(fpath, String); 
     return cf.list(fpath);
   },
+  'folder.listAll'() {
+    return cf.listAll();
+  },
 });

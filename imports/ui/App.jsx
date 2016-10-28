@@ -10,19 +10,42 @@ import Drawer from 'material-ui/Drawer';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
-import {List, ListItem} from 'material-ui/List';
-import ActionGrade from 'material-ui/svg-icons/action/grade';
-import ContentInbox from 'material-ui/svg-icons/content/inbox';
-import ContentDrafts from 'material-ui/svg-icons/content/drafts';
-import ContentSend from 'material-ui/svg-icons/content/send';
-import Subheader from 'material-ui/Subheader';
+import AutoComplete from 'material-ui/AutoComplete';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import Task from './Task.jsx';
+import Folder from './Folder.jsx';
 
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
  
+
+const fruit = [
+  'Apple', 'Apricot', 'Avocado',
+  'Banana', 'Bilberry', 'Blackberry', 'Blackcurrant', 'Blueberry',
+  'Boysenberry', 'Blood Orange',
+  'Cantaloupe', 'Currant', 'Cherry', 'Cherimoya', 'Cloudberry',
+  'Coconut', 'Cranberry', 'Clementine',
+  'Damson', 'Date', 'Dragonfruit', 'Durian',
+  'Elderberry',
+  'Feijoa', 'Fig',
+  'Goji berry', 'Gooseberry', 'Grape', 'Grapefruit', 'Guava',
+  'Honeydew', 'Huckleberry',
+  'Jabouticaba', 'Jackfruit', 'Jambul', 'Jujube', 'Juniper berry',
+  'Kiwi fruit', 'Kumquat',
+  'Lemon', 'Lime', 'Loquat', 'Lychee',
+  'Nectarine',
+  'Mango', 'Marion berry', 'Melon', 'Miracle fruit', 'Mulberry', 'Mandarine',
+  'Olive', 'Orange',
+  'Papaya', 'Passionfruit', 'Peach', 'Pear', 'Persimmon', 'Physalis', 'Plum', 'Pineapple',
+  'Pumpkin', 'Pomegranate', 'Pomelo', 'Purple Mangosteen',
+  'Quince',
+  'Raspberry', 'Raisin', 'Rambutan', 'Redcurrant',
+  'Salal berry', 'Satsuma', 'Star fruit', 'Strawberry', 'Squash', 'Salmonberry',
+  'Tamarillo', 'Tamarind', 'Tomato', 'Tangerine',
+  'Ugli fruit',
+  'Watermelon',
+];
 
 const styles = {
   toolbar:{
@@ -41,14 +64,12 @@ const styles = {
     whiteSpace: "nowrap"
   },
   button:{margin: 12,},
-  dtpicker:{marginTop: 5,marginLeft: 20,width:100}
+  auto_complete:{marginTop: 5,marginLeft: 20,width:200}
 }; 
 // App component - represents the whole app
 export default class App extends Component {
   constructor(props) {
     super(props);
-    const listId = this.props.params.id;
-    console.log('ssss'+listId);
     this.state = {
       pics: [
         { _id: 1, text: 'This is task 1' },
@@ -62,20 +83,23 @@ export default class App extends Component {
       dt_default:new Date(),
       openDelete:false,
       sels:[],
-      openFolder:false
+      openFolder:false,
+      folders:[]
     };
+    var me=this;
+    Meteor.call('folder.listAll', function(error, result){
+        if(error){
+            console.log(error);
+        } else {
+            console.log(result);
+            me.setState({folders:result});
+        }
+    });
   }
   getChildContext() {
      return { muiTheme: getMuiTheme(baseTheme) };
   }
   handleFolder(){
-    Meteor.call('folder.list', '中文次2222',function(error, result){
-        if(error){
-            console.log(error);
-        } else {
-            console.log(result);
-        }
-    });
     this.setState({openFolder:!this.state.openFolder});
   }
   handleDelete(){
@@ -145,52 +169,6 @@ export default class App extends Component {
 
     return (
       <div id="container" className="container">
-        <Drawer 
-          open={this.state.openFolder} 
-          onRequestChange={(open) => this.setState({openFolder:open})}
-          docked={false}>
-
-
-          <List>
-            <Subheader>请选择文件目录</Subheader>
-            <ListItem primaryText="Sent mail" leftIcon={<ContentSend />} />
-            <ListItem primaryText="Drafts" leftIcon={<ContentDrafts />} />
-            <ListItem
-              primaryText="Inbox"
-              leftIcon={<ContentInbox />}
-              initiallyOpen={true}
-              primaryTogglesNestedList={true}
-              nestedItems={[
-                <ListItem
-                  key={1}
-                  primaryText="Starred"
-                  leftIcon={<ActionGrade />}
-                />,
-                <ListItem
-                  key={2}
-                  primaryText="Sent Mail"
-                  leftIcon={<ContentSend />}
-                  disabled={true}
-                  nestedItems={[
-                    <ListItem key={1} primaryText="Drafts" leftIcon={<ContentDrafts />} />,
-                  ]}
-                />,
-                <ListItem
-                  key={3}
-                  primaryText="Inbox"
-                  leftIcon={<ContentInbox />}
-                  open={this.state.open}
-                  onNestedListToggle={this.handleNestedListToggle}
-                  nestedItems={[
-                    <ListItem key={1} primaryText="Drafts" leftIcon={<ContentDrafts />} />,
-                  ]}
-                />,
-              ]}
-            />
-          </List>
-
-        </Drawer>
-
         <Dialog
             actions={actions}
             modal={false}
@@ -202,17 +180,14 @@ export default class App extends Component {
 
     <Toolbar style={styles.toolbar}>
         <ToolbarGroup firstChild={true}>
-        <IconButton 
-          onTouchTap={this.handleFolder.bind(this)}
-          tooltip="2016-10-27/pending"
-        ><MoreVertIcon />
-        </IconButton>
-        <label
-         style={styles.label}
-        >
-          400张
-        </label>
-
+  
+    <AutoComplete
+      hintText="输入目录路径"
+      filter={AutoComplete.fuzzyFilter}
+      dataSource={this.state.folders}
+      maxSearchResults={5}
+      style={styles.auto_complete}
+    />
         
         </ToolbarGroup>
 
