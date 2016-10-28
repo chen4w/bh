@@ -17,8 +17,8 @@ const style = {
     float: "left"
   },
 }; 
-// Task component - represents a single todo item
-export default class Task extends Component {
+// Paint component - represents a single todo item
+export default class Paint extends Component {
   constructor(props) {
     super(props);
  
@@ -42,12 +42,12 @@ export default class Task extends Component {
   }
 }
  
-Task.propTypes = {
+Paint.propTypes = {
   // This component gets the task to display through a React prop.
   // We can use propTypes to indicate it is required
   pic: PropTypes.string.isRequired,
 };
 
-Task.childContextTypes = {
+Paint.childContextTypes = {
    muiTheme: React.PropTypes.object.isRequired,
 };
