@@ -1,0 +1,5 @@
+10.27
+--------
+用auto_complete控件代替上一版的drawer+多层list实现(Folder.jsx)
+多层list目前存在性能问题,且无法自持懒加载
+下一步：auto_complete选择目录，获得并在内容区显示目录下的所有图片

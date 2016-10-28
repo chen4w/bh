@@ -16,7 +16,7 @@ class CFolder {
   }
   walk(fpath, rl){
     //walk by absolute path, but return relative path
-    rl.push(fpath.substring(Meteor.settings.pics.root.length ));
+    rl.push(fpath.substring(Meteor.settings.pics.root.length+1));
     let me = this;
     let l = me.getChildren(fpath);
     l.forEach(function (item, index, array) {
