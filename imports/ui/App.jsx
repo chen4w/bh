@@ -13,7 +13,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import AutoComplete from 'material-ui/AutoComplete';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import Task from './Task.jsx';
+import Paint from './Paint.jsx';
 import Folder from './Folder.jsx';
 
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
@@ -143,9 +143,9 @@ export default class App extends Component {
     this.setState({openDelete: false});
   };
 
-  renderTasks() {
+  renderPaints() {
     return this.state.pics.map((pic,i) => (
-      <Task key={i} pic={pic.fn} bsel={pic.bsel} par={this} pos={i}/>
+      <Paint key={i} pic={pic.fn} bsel={pic.bsel} par={this} pos={i}/>
     ));
   }
  
@@ -205,7 +205,7 @@ export default class App extends Component {
         </ToolbarGroup>
 </Toolbar>
         <ul>
-          {this.renderTasks()}
+          {this.renderPaints()}
         </ul>
       </div>
     );
