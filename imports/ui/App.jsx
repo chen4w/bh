@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
  
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import Checkbox from 'material-ui/Checkbox';
@@ -8,7 +9,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Drawer from 'material-ui/Drawer';
 import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import CameraIcon from 'material-ui/svg-icons/image/photo-camera';
 
 import AutoComplete from 'material-ui/AutoComplete';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -228,7 +229,15 @@ export default class App extends Component {
       searchText={this.state.path}
       style={styles.auto_complete}
     />
-        
+    
+        <IconMenu
+          style={styles.button}
+          iconButtonElement={<IconButton><CameraIcon /></IconButton>}
+        >
+          <MenuItem  primaryText="拍照" />
+          <MenuItem  primaryText="上传" />
+        </IconMenu>
+
         </ToolbarGroup>
 
         <ToolbarGroup >
