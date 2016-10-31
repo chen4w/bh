@@ -69,9 +69,12 @@ export default class App extends Component {
   onItemAdded(data){
     let pics = this.state.pics;
     for(var k=0; k<data.length; k++){
-      if(data[k].indexOf(this.state.path)!=0)
+      let dk = data[k];
+      let ldk = dk.toLowerCase();
+      if(dk.indexOf(this.state.path)!=0 || 
+        (!ldk.endsWith('.jpg')&& !ldk.endsWith('.png')&& !ldk.endsWith('.jpeg')))
         continue;
-      let fn = data[k].substring(this.state.path.length+1);
+      let fn = dk.substring(this.state.path.length+1);
       pics.push({fn:fn});
     }   
     this.setState({pics:pics});
@@ -80,16 +83,25 @@ export default class App extends Component {
   onItemDeleted(data){
     //当前目录
     let pics = this.state.pics;
+    let sels = this.state.sels;
     for(var k=0; k<data.length; k++){
       if(data[k].indexOf(this.state.path)!=0)
         continue;
       let fn = data[k].substring(this.state.path.length+1);
+      //remove paper
       for(var i=0; i<pics.length; i++){
         if(pics[i].fn==fn){
           pics.splice(i,1);
           break;
         }
-      }      
+      } 
+      //remove from selected
+      for(var i=0; i<sels.length; i++){
+        if(sels[i].fn==fn){
+          sels.splice(i,1);
+          break;
+        }
+      }       
     }   
     this.setState({pics:pics});
     console.log('pic deleted--'+data);
@@ -115,8 +127,10 @@ export default class App extends Component {
   handleDeleteOpen(){
     this.setState({openDelete: true});
   };
-  handleDelete(){
-    //delete selected items
+
+  handlePass(p1, p2){
+    //pass or noPass pics
+    console.log(p1);
     let me = this;
     let pics = [];
     let path = this.state.path+'/';
@@ -124,7 +138,7 @@ export default class App extends Component {
       pics.push(path+item.fn);
     });
     console.log(pics);
-    Meteor.call('pic.pass',pics,false, function(error, result){
+    Meteor.call('pic.pass',pics,p1, function(error, result){
         if(error){
             console.log(error);
         } else {
@@ -187,7 +201,7 @@ export default class App extends Component {
       <FlatButton
         label="删除"
         primary={true}
-        onTouchTap={this.handleDelete.bind(this)}
+        onTouchTap={this.handlePass.bind(this,false)}
       />,
     ];
 
@@ -218,7 +232,8 @@ export default class App extends Component {
         </ToolbarGroup>
 
         <ToolbarGroup >
-    <RaisedButton label="通过" primary={true} style={styles.button} disabled={!bSelOne}/>
+    <RaisedButton label="通过" primary={true} style={styles.button} disabled={!bSelOne}
+    onTouchTap={this.handlePass.bind(this,true)} />
     <RaisedButton label="删除" secondary={true} style={styles.button} disabled={!bSelOne}
       onTouchTap={this.handleDeleteOpen.bind(this)}/>        
         <ToolbarSeparator />
