@@ -15,3 +15,8 @@ meteor 整合websocket遇到阻力，server端可启动，client存在问题
 10.30
 --------
 嵌入websocket初步通过，ios仿真通过，但工具条宽度还不能自适应iphone
+
+10.31
+--------
+删除、通过 完成，通过websocket监测文件目录和更新内容区完成
+下一步：上传、拍照上传、
