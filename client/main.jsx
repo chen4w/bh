@@ -22,6 +22,7 @@ socket.on('disconnect', function() {
 });
 socket.on('added', function(data) {
   console.log('added:'+data);
+  inf.app.onItemAdded(data);
 });
 socket.on('deleted', function(data) {
   console.log('deleted:'+data);

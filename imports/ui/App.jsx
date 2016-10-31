@@ -66,6 +66,17 @@ export default class App extends Component {
     this.onDirChange(this.state.path);
   }
 
+  onItemAdded(data){
+    let pics = this.state.pics;
+    for(var k=0; k<data.length; k++){
+      if(data[k].indexOf(this.state.path)!=0)
+        continue;
+      let fn = data[k].substring(this.state.path.length+1);
+      pics.push({fn:fn});
+    }   
+    this.setState({pics:pics});
+    console.log('pic added---'+data);   
+  }
   onItemDeleted(data){
     //当前目录
     let pics = this.state.pics;
@@ -81,7 +92,7 @@ export default class App extends Component {
       }      
     }   
     this.setState({pics:pics});
-    console.log('delete---'+data);
+    console.log('pic deleted--'+data);
   }
   getChildContext() {
      return { muiTheme: getMuiTheme(baseTheme) };
