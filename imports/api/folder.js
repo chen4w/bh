@@ -12,5 +12,10 @@ Meteor.methods({
     check(fpath, String); 
     return cf.getPics(fpath);
   },
+ 'pic.pass'(pics,bPass) {
+    check(pics, [String]); 
+    check(bPass, Boolean); 
+    return cf.pass(pics,bPass);
+  },
 
 });

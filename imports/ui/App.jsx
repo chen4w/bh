@@ -46,7 +46,7 @@ export default class App extends Component {
 
     this.state = {
       path:'upload',
-      pics: [{fn:"1.png"}, {fn:"2.png"}],
+      pics: [],
       bSelAll:false,
       dt_default:new Date(),
       openDelete:false,
@@ -63,6 +63,25 @@ export default class App extends Component {
             me.setState({folders:result});
         }
     });
+    this.onDirChange(this.state.path);
+  }
+
+  onItemDeleted(data){
+    //当前目录
+    let pics = this.state.pics;
+    for(var k=0; k<data.length; k++){
+      if(data[k].indexOf(this.state.path)!=0)
+        continue;
+      let fn = data[k].substring(this.state.path.length+1);
+      for(var i=0; i<pics.length; i++){
+        if(pics[i].fn==fn){
+          pics.splice(i,1);
+          break;
+        }
+      }      
+    }   
+    this.setState({pics:pics});
+    console.log('delete---'+data);
   }
   getChildContext() {
      return { muiTheme: getMuiTheme(baseTheme) };
@@ -82,8 +101,26 @@ export default class App extends Component {
   handleFolder(){
     this.setState({openFolder:!this.state.openFolder});
   }
-  handleDelete(){
+  handleDeleteOpen(){
     this.setState({openDelete: true});
+  };
+  handleDelete(){
+    //delete selected items
+    let me = this;
+    let pics = [];
+    let path = this.state.path+'/';
+    this.state.sels.forEach(function (item, index, array) {
+      pics.push(path+item.fn);
+    });
+    console.log(pics);
+    Meteor.call('pic.pass',pics,false, function(error, result){
+        if(error){
+            console.log(error);
+        } else {
+            console.log(result);
+         }
+         me.setState({openDelete: false});
+    });    
   };
   
   toggleSelAll(evt, checked) {
@@ -139,7 +176,7 @@ export default class App extends Component {
       <FlatButton
         label="删除"
         primary={true}
-        onTouchTap={this.handleCloseDelete}
+        onTouchTap={this.handleDelete.bind(this)}
       />,
     ];
 
@@ -172,7 +209,7 @@ export default class App extends Component {
         <ToolbarGroup >
     <RaisedButton label="通过" primary={true} style={styles.button} disabled={!bSelOne}/>
     <RaisedButton label="删除" secondary={true} style={styles.button} disabled={!bSelOne}
-      onTouchTap={this.handleDelete.bind(this)}/>        
+      onTouchTap={this.handleDeleteOpen.bind(this)}/>        
         <ToolbarSeparator />
           <Checkbox
             label="全选"

@@ -11,19 +11,27 @@ if (!Response.prototype.setEncoding) {
   }
 }
 const PORT = 8200;
+let inf={};
 let socket = require('socket.io-client')(`http://localhost:${PORT}`);
-
+inf.sock = socket;
 socket.on('connect', function() {
   console.log('Client connected');
 });
 socket.on('disconnect', function() {
   console.log('Client disconnected');
 });
-
+socket.on('added', function(data) {
+  console.log('added:'+data);
+});
+socket.on('deleted', function(data) {
+  console.log('deleted:'+data);
+  inf.app.onItemDeleted(data);
+});
 
 Meteor.startup(() => {
   var injectTapEventPlugin = require("react-tap-event-plugin");
   injectTapEventPlugin();
   //render(renderRoutes(), document.getElementById('app'));
-  render(<App />, document.getElementById('app'));
+  inf.app = render(<App />, document.getElementById('app'));
+  console.log(app);
 });

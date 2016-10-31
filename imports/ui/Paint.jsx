@@ -30,7 +30,7 @@ export default class Paint extends Component {
      return { muiTheme: getMuiTheme(baseTheme) };
   }
   render() {
-    let imgsrc = "/pics/"+this.props.pic;
+    let imgsrc = "/img/"+this.props.pic;
     let depth = this.props.bsel?5:1;
     return (
        <Paper style={style} zDepth={depth}  

@@ -5,7 +5,6 @@ import {watch} from  './guard.js';
 
 Meteor.startup(() => {
   
-  watch();
   //for windows and mac path
   const path = require('path');
   const fs = require('fs');
@@ -14,9 +13,11 @@ Meteor.startup(() => {
   if(!Meteor.settings.pics){
     Meteor.settings.pics={
       root_url:'/img/',
-      root: (path.sep=='/'? "/Users/c4w/git/bh/public/pics" : "c:\\pics")
+      root: (path.sep=='/'? "/Users/c4w/git/pics" : "c:\\pics")
     };
   }
+  //start dir watch
+  watch();
 
   //a simple static files server for easy deploy 
   WebApp.connectHandlers.use(Meteor.settings.pics.root_url, (req, res) => {

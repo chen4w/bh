@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import http from 'http';
 import socket_io from 'socket.io';
 
@@ -7,8 +8,8 @@ const fs=require('fs');
 const PORT= 8200;
 
 export function watch(canvas, options) {
-    console.log('watch start---');
-async.auto({  
+    const root_len= Meteor.settings.pics.root.length+1;
+    async.auto({  
     config: function(cb){
         cb(null,{
             watchPath:'**/'
@@ -20,7 +21,9 @@ async.auto({
 
         var io = scope.network.io;
         // Watch all .js files/dirs in process.cwd()
-        gaze([filePath+'*.png',filePath+'*.jpg'], function(err, watcher) {
+        gaze([filePath+'*.png',filePath+'*.jpg'], 
+         {cwd: Meteor.settings.pics.root}, 
+          function(err, watcher) {
             // Files have all started watching
             // Get all watched files
             var watched = this.watched();
@@ -32,14 +35,15 @@ async.auto({
 
             // On file added
             this.on('added', function(fp) {
-                var pos = fp.lastIndexOf('pics/');
-                io.emit('added',[fp.substring(pos+4)]);
+                io.emit('added',[fp.substring(root_len)]);
+            });
+            this.on('renamed', function(fp) {
+                io.emit('added',[fp.substring(root_len)]);
             });
 
             // On file deleted
-            this.on('deleted', function(filepath) {
-                var inf = filepath + ' was deleted';
-                io.emit('deleted',inf)
+            this.on('deleted', function(fp) {
+                io.emit('deleted',[fp.substring(root_len)])
             });
 
             // On changed/added/deleted
