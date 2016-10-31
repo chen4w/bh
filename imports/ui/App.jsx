@@ -19,34 +19,6 @@ import Folder from './Folder.jsx';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
  
-
-const fruit = [
-  'Apple', 'Apricot', 'Avocado',
-  'Banana', 'Bilberry', 'Blackberry', 'Blackcurrant', 'Blueberry',
-  'Boysenberry', 'Blood Orange',
-  'Cantaloupe', 'Currant', 'Cherry', 'Cherimoya', 'Cloudberry',
-  'Coconut', 'Cranberry', 'Clementine',
-  'Damson', 'Date', 'Dragonfruit', 'Durian',
-  'Elderberry',
-  'Feijoa', 'Fig',
-  'Goji berry', 'Gooseberry', 'Grape', 'Grapefruit', 'Guava',
-  'Honeydew', 'Huckleberry',
-  'Jabouticaba', 'Jackfruit', 'Jambul', 'Jujube', 'Juniper berry',
-  'Kiwi fruit', 'Kumquat',
-  'Lemon', 'Lime', 'Loquat', 'Lychee',
-  'Nectarine',
-  'Mango', 'Marion berry', 'Melon', 'Miracle fruit', 'Mulberry', 'Mandarine',
-  'Olive', 'Orange',
-  'Papaya', 'Passionfruit', 'Peach', 'Pear', 'Persimmon', 'Physalis', 'Plum', 'Pineapple',
-  'Pumpkin', 'Pomegranate', 'Pomelo', 'Purple Mangosteen',
-  'Quince',
-  'Raspberry', 'Raisin', 'Rambutan', 'Redcurrant',
-  'Salal berry', 'Satsuma', 'Star fruit', 'Strawberry', 'Squash', 'Salmonberry',
-  'Tamarillo', 'Tamarind', 'Tomato', 'Tangerine',
-  'Ugli fruit',
-  'Watermelon',
-];
-
 const styles = {
   toolbar:{
     position: 'fixed',
@@ -70,7 +42,10 @@ const styles = {
 export default class App extends Component {
   constructor(props) {
     super(props);
+
+
     this.state = {
+      path:'upload',
       pics: [{fn:"1.png"}, {fn:"2.png"}],
       bSelAll:false,
       dt_default:new Date(),
@@ -84,6 +59,7 @@ export default class App extends Component {
         if(error){
             console.log(error);
         } else {
+          //console.log(result);
             me.setState({folders:result});
         }
     });
@@ -97,6 +73,8 @@ export default class App extends Component {
         if(error){
             console.log(error);
         } else {
+          //console.log(p1+'----'+result);
+            me.setState({path:p1});
             me.setState({pics:result});
         }
     });
@@ -144,8 +122,9 @@ export default class App extends Component {
   };
 
   renderPaints() {
+    let path = this.state.path+'/';
     return this.state.pics.map((pic,i) => (
-      <Paint key={i} pic={pic.fn} bsel={pic.bsel} par={this} pos={i}/>
+      <Paint key={i} pic={path+pic.fn} bsel={pic.bsel} par={this} pos={i}/>
     ));
   }
  
@@ -184,7 +163,7 @@ export default class App extends Component {
       dataSource={this.state.folders}
       maxSearchResults={5}
       onNewRequest={this.onDirChange.bind(this)}
-      searchText={'2016'}
+      searchText={this.state.path}
       style={styles.auto_complete}
     />
         

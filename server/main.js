@@ -1,11 +1,15 @@
 import { Meteor } from 'meteor/meteor';
 import '../imports/api/folder.js';
 
+import {watch} from  './guard.js';
+
 Meteor.startup(() => {
-  // code to run on server at startup
+  
+  watch();
   //for windows and mac path
   const path = require('path');
   const fs = require('fs');
+
 
   if(!Meteor.settings.pics){
     Meteor.settings.pics={

@@ -30,12 +30,12 @@ export default class Paint extends Component {
      return { muiTheme: getMuiTheme(baseTheme) };
   }
   render() {
-    let imgsrc = "/pics/upload/"+this.props.pic;
+    let imgsrc = "/pics/"+this.props.pic;
     let depth = this.props.bsel?5:1;
     return (
        <Paper style={style} zDepth={depth}  
        onTouchTap={this.props.par.toggleSel.bind(this.props.par,this.props.pos)}>
-       <img width="200" src={imgsrc}/>
+       <img width="250em" src={imgsrc}/>
        </Paper>
       
     );
