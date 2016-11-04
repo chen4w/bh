@@ -5,6 +5,7 @@ import Checkbox from 'material-ui/Checkbox';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
  
+const settings = require('../../settings.js');
 
 const style = {
   //height: 100,
@@ -30,7 +31,8 @@ export default class Paint extends Component {
      return { muiTheme: getMuiTheme(baseTheme) };
   }
   render() {
-    let imgsrc = "/img/"+this.props.pic;
+    //相对路径会导致ios设备无法获取到图片
+    let imgsrc = settings.host+ settings.pic_url+ this.props.pic;
     let depth = this.props.bsel?5:1;
     return (
        <Paper style={style} zDepth={depth}  

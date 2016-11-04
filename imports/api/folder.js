@@ -17,5 +17,7 @@ Meteor.methods({
     check(bPass, Boolean); 
     return cf.pass(pics,bPass);
   },
-
+ 'pic.take'(data,fpath){
+   cf.takePic(data,fpath);
+ }
 });

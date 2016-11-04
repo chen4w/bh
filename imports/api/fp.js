@@ -1,8 +1,9 @@
-import { Meteor } from 'meteor/meteor';
 
 const g_fs = require('fs');
 const g_path = require('path');
 const mv = require('mv');
+const uuid = require('node-uuid');
+const settings = require('../../settings.js');
 
 class CFolder {
   constructor() {
@@ -10,7 +11,7 @@ class CFolder {
   pass(pics, bPass){
     console.log(pics+':'+bPass);
     pics.forEach(function(item){
-      let fsrc = Meteor.settings.pics.root+g_path.sep+item;
+      let fsrc = settings.pic_root+g_path.sep+item;
       let pos = fsrc.lastIndexOf(g_path.sep);
       let fpath = fsrc.substring(0,pos);
       let fsub = bPass? 'p':'n';
@@ -23,9 +24,15 @@ class CFolder {
     });
 
   }
-
+  takePic(data,fpath){
+    let fn = settings.pic_root+ fpath+ g_path.sep+ uuid.v1()+".jpg";
+    let base64Data = data.replace(/^data:image\/jpeg;base64,/, "");
+    g_fs.writeFile(fn, new Buffer(base64Data, 'base64'), function(err) {
+      console.log(err);
+    });
+  }
   getPics(fpath){
-    let dir = Meteor.settings.pics.root+g_path.sep+fpath;
+    let dir = settings.pic_root+g_path.sep+fpath;
     let rl = [];
     if (!g_fs.existsSync(dir)) {
       return rl;
@@ -39,16 +46,16 @@ class CFolder {
     return rl;
   }
   list(fpath) {
-    return this.getChildren(Meteor.settings.pics.root);
+    return this.getChildren(settings.pic_root);
   }
   listFolder(){
       let rl = [];
-      this.walk(Meteor.settings.pics.root, rl);
+      this.walk(settings.pic_root, rl);
       return rl;
   }
   walk(fpath, rl){
     //walk by absolute path, but return relative path
-    rl.push(fpath.substring(Meteor.settings.pics.root.length+1));
+    rl.push(fpath.substring(settings.pic_root.length+1));
     let me = this;
     let l = me.getChildren(fpath);
     l.forEach(function (item, index, array) {

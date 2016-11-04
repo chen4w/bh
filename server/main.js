@@ -8,20 +8,14 @@ Meteor.startup(() => {
   //for windows and mac path
   const path = require('path');
   const fs = require('fs');
+  const settings = require('../settings.js');
 
-
-  if(!Meteor.settings.pics){
-    Meteor.settings.pics={
-      root_url:'/img/',
-      root: (path.sep=='/'? "/Users/c4w/git/pics" : "c:\\pics")
-    };
-  }
   //start dir watch
   watch();
 
   //a simple static files server for easy deploy 
-  WebApp.connectHandlers.use(Meteor.settings.pics.root_url, (req, res) => {
-    let fp =  Meteor.settings.pics.root + req.url.replace(/\//g,path.sep);
+  WebApp.connectHandlers.use(settings.pic_url, (req, res) => {
+    let fp =  settings.pic_root + req.url.replace(/\//g,path.sep);
     let fpath = decodeURIComponent(fp);
     console.log(fpath);
     if (fs.existsSync(fpath)) {

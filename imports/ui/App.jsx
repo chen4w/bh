@@ -67,6 +67,19 @@ export default class App extends Component {
     this.onDirChange(this.state.path);
   }
 
+  takePic(){
+        MeteorCamera.getPicture({  
+          width: 800,
+          height: 1600,
+          quality: 75
+        }, function (err, data) {
+          if (err) {
+            console.log('error', err);
+          }
+          if(data)
+            Meteor.call('pic.take', data,'/upload');
+    });    
+  }
   onItemAdded(data){
     let pics = this.state.pics;
     for(var k=0; k<data.length; k++){
@@ -234,7 +247,7 @@ export default class App extends Component {
           style={styles.button}
           iconButtonElement={<IconButton><CameraIcon /></IconButton>}
         >
-          <MenuItem  primaryText="拍照" />
+          <MenuItem  primaryText="拍照" onTouchTap={this.takePic.bind(this)}/>
           <MenuItem  primaryText="上传" />
         </IconMenu>
 

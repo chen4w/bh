@@ -1,4 +1,3 @@
-import { Meteor } from 'meteor/meteor';
 import http from 'http';
 import socket_io from 'socket.io';
 
@@ -6,9 +5,10 @@ const path = require("path");
 const async = require('async');
 const fs=require('fs');
 const PORT= 8200;
+const settings = require('../settings.js');
 
 export function watch(canvas, options) {
-    const root_len= Meteor.settings.pics.root.length+1;
+    const root_len= settings.pic_root.length+1;
     async.auto({  
     config: function(cb){
         cb(null,{
@@ -22,7 +22,7 @@ export function watch(canvas, options) {
         var io = scope.network.io;
         // Watch all .js files/dirs in process.cwd()
         gaze([filePath+'*.png',filePath+'*.jpg'], 
-         {cwd: Meteor.settings.pics.root}, 
+         {cwd: settings.pic_root}, 
           function(err, watcher) {
             // Files have all started watching
             // Get all watched files

@@ -20,3 +20,4 @@ shell-server@0.2.1            # Server-side component of the `meteor shell` comm
 autopublish@1.0.7             # Publish all data to the clients (for prototyping)
 juliancwirko:postcss
 less@2.7.6
+mdg:camera
