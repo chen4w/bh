@@ -21,7 +21,9 @@ Meteor.startup(() => {
 
   //a simple static files server for easy deploy 
   WebApp.connectHandlers.use(Meteor.settings.pics.root_url, (req, res) => {
-    let fpath =  Meteor.settings.pics.root + req.url.replace(/\//g,path.sep);
+    let fp =  Meteor.settings.pics.root + req.url.replace(/\//g,path.sep);
+    let fpath = decodeURIComponent(fp);
+    console.log(fpath);
     if (fs.existsSync(fpath)) {
         let data = fs.readFileSync(fpath, data);
         res.writeHead(200, {'Content-Type': 'image'});
