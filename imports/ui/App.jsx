@@ -129,7 +129,7 @@ export default class App extends Component {
         if(error){
             console.log(error);
         } else {
-          //console.log(p1+'----'+result);
+          console.log(p1+'----'+result);
             me.setState({path:p1});
             me.setState({pics:result});
         }
