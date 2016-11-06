@@ -4,7 +4,6 @@ import socket_io from 'socket.io';
 const path = require("path");
 const async = require('async');
 const fs=require('fs');
-const PORT= 8200;
 const settings = require('../settings.js');
 
 export function watch(canvas, options) {
@@ -99,7 +98,7 @@ export function watch(canvas, options) {
     },
     ready:['network',function(scope,cb){
         //listen
-        scope.network.server.listen(PORT);            
+        scope.network.server.listen(settings.port_sock);            
     }] 
     },function (err, result) {
 		if (err) {

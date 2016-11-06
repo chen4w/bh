@@ -10,9 +10,10 @@ if (!Response.prototype.setEncoding) {
     // do nothing
   }
 }
-const PORT = 8200;
+const settings = require('../settings.js');
+
 let inf={};
-let socket = require('socket.io-client')(`http://localhost:${PORT}`);
+let socket = require('socket.io-client')('http://'+settings.host+':'+settings.port_sock);
 inf.sock = socket;
 socket.on('connect', function() {
   console.log('Client connected');

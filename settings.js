@@ -3,7 +3,9 @@ var path = require("path");
 class Setting {
   constructor() {
     this.pic_url = '/img/';
-    this.host = 'http://192.168.1.77:3000';
+    this.port_sock = 8200;
+    this.port_web = 3000;
+    this.host = '192.168.1.77';
 
     if(path.sep=='/')
       this.pic_root = "/Users/c4w/git/pics";

@@ -32,7 +32,8 @@ export default class Paint extends Component {
   }
   render() {
     //相对路径会导致ios设备无法获取到图片
-    let imgsrc = settings.host+ settings.pic_url+ this.props.pic;
+    let imgsrc = 'http://'+settings.host+ ':'+settings.port_web
+      +settings.pic_url+ this.props.pic;
     let depth = this.props.bsel?5:1;
     return (
        <Paper style={style} zDepth={depth}  
