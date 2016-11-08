@@ -5,7 +5,7 @@ class Setting {
     this.pic_url = '/img/';
     this.port_sock = 8200;
     this.port_web = 3000;
-    this.host = '192.168.1.77';
+    this.host = '172.16.2.72';
 
     if(path.sep=='/')
       this.pic_root = "/Users/c4w/git/pics";
