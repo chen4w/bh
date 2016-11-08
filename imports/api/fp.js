@@ -55,7 +55,10 @@ class CFolder {
   }
   walk(fpath, rl){
     //walk by absolute path, but return relative path
-    rl.push(fpath.substring(settings.pic_root.length+1));
+    let pn = fpath.substring(settings.pic_root.length+1);
+    //exclude the root path
+    if(pn!="")
+      rl.push(pn);
     let me = this;
     let l = me.getChildren(fpath);
     l.forEach(function (item, index, array) {
