@@ -34,10 +34,20 @@ export function watch(canvas, options) {
 
             // On file added
             this.on('added', function(fp) {
-                io.emit('added',[fp.substring(root_len)]);
+                if(settings.delay){
+                    setTimeout(function(){
+                        io.emit('added',[fp.substring(root_len)]);
+                    }, settings.delay);
+                }else
+                    io.emit('added',[fp.substring(root_len)]);
             });
             this.on('renamed', function(fp) {
-                io.emit('added',[fp.substring(root_len)]);
+                if(settings.delay){
+                    setTimeout(function(){
+                        io.emit('added',[fp.substring(root_len)]);
+                    }, settings.delay);
+                }else
+                    io.emit('added',[fp.substring(root_len)]);
             });
 
             // On file deleted
