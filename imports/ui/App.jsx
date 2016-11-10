@@ -44,9 +44,10 @@ export default class App extends Component {
   constructor(props) {
     super(props);
 
-
+    //console.log(this.props);
+    let path_default = props.params.path?props.params.path:'upload';
     this.state = {
-      path:'upload',
+      path:path_default,
       pics: [],
       bSelAll:false,
       dt_default:new Date(),
