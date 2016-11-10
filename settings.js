@@ -5,7 +5,7 @@ class Setting {
     this.pic_url = '/img/';
     this.port_sock = 8200;
     this.port_web = 3000;
-    this.host = '172.16.2.72';
+    this.host = '127.0.0.1';
     this.delay = 1000;
 
     if(path.sep=='/')
