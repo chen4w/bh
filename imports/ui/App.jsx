@@ -167,19 +167,16 @@ export default class App extends Component {
     for(const p in pics){
       pics[p].bsel = checked;
     }
-    this.setState({pics:pics});
-    this.setState({bSelAll:checked});
-    if(checked)
-      this.setState({sels:pics});
-    else
-      this.setState({sels:[]});
+    this.setState({
+      bSelAll:checked,
+      pics:pics,
+      sels:(checked?pics:[])});
   }
   toggleSel(pos) {
     let pics = this.state.pics;
     let pic = pics[pos];
     let sels=[];
     pic.bsel = !pic.bsel;
-    this.setState({pics:pics});
     
     let bSelAll=true;
     for(const p in pics){
@@ -189,9 +186,12 @@ export default class App extends Component {
         sels.push(pics[p]);
       }
     }
-    this.setState({bSelAll:bSelAll});
-    this.setState({sels:sels});
-  }
+    this.setState({
+      bSelAll:bSelAll,
+      sels:sels,
+      pics:pics
+    });
+   }
    
   handleCloseDelete(){
     this.setState({openDelete: false});
@@ -250,22 +250,23 @@ export default class App extends Component {
           <MenuItem  primaryText="拍照" onTouchTap={this.takePic.bind(this)}/>
           <MenuItem  primaryText="上传" />
         </IconMenu>
-
-        </ToolbarGroup>
-
-        <ToolbarGroup >
-    <RaisedButton label="通过" primary={true} style={styles.button} disabled={!bSelOne}
-    onTouchTap={this.handlePass.bind(this,true)} />
-    <RaisedButton label="删除" secondary={true} style={styles.button} disabled={!bSelOne}
-      onTouchTap={this.handleDeleteOpen.bind(this)}/>        
-        <ToolbarSeparator />
-          <Checkbox
+         <Checkbox
             label="全选"
             checked={this.state.bSelAll}
             onCheck={this.toggleSelAll.bind(this)}
             style={styles.checkbox}
             labelStyle={styles.label_check}
           />
+
+        </ToolbarGroup>
+
+        <ToolbarGroup >
+
+    <RaisedButton label="通过" primary={true} style={styles.button} disabled={!bSelOne}
+    onTouchTap={this.handlePass.bind(this,true)} />
+    <RaisedButton label="删除" secondary={true} style={styles.button} disabled={!bSelOne}
+      onTouchTap={this.handleDeleteOpen.bind(this)}/>        
+        <ToolbarSeparator />
         </ToolbarGroup>
 </Toolbar>
         <ul>

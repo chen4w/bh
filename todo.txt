@@ -25,3 +25,10 @@ meteor 整合websocket遇到阻力，server端可启动，client存在问题
 --------
 为适应ios仿真，img的src需要http全路径，socket.io client也需要host url
 
+11.8
+-------
+通过windows下测试,settings允许设置推送延时
+
+11.10
+-------
+用react route实现了界面分拆，允许admin指定一级目录
