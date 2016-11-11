@@ -37,7 +37,7 @@ export default class Paint extends Component {
     let depth = this.props.bsel?5:1;
     return (
        <Paper style={style} zDepth={depth}  
-       onTouchTap={this.props.par.toggleSel.bind(this.props.par,this.props.pos)}>
+       onClick={this.props.par.toggleSel.bind(this.props.par,this.props.pos)}>
        <img width="250em" src={imgsrc}/>
        </Paper>
       

@@ -37,6 +37,7 @@ const styles = {
     whiteSpace: "nowrap"
   },
   button:{margin: 12,},
+  btn_ico:{marginTop: 8, marginRight:22},
   auto_complete:{marginTop: 5,marginLeft: 20,width:200}
 }; 
 // App component - represents the whole app
@@ -67,7 +68,10 @@ export default class App extends Component {
     });
     this.onDirChange(this.state.path);
   }
-
+  componentDidMount() {
+    ginf.app = this;
+    console.log('componentDidMount:'+this);
+  }
   takePic(){
         MeteorCamera.getPicture({  
           width: 800,
@@ -172,7 +176,9 @@ export default class App extends Component {
       pics:pics,
       sels:(checked?pics:[])});
   }
-  toggleSel(pos) {
+  toggleSel(pos,evt) {
+    console.log(pos);
+    event.preventDefault();
     let pics = this.state.pics;
     let pic = pics[pos];
     let sels=[];
@@ -244,14 +250,14 @@ export default class App extends Component {
     />
     
         <IconMenu
-          style={styles.button}
+          style={styles.btn_ico}
           iconButtonElement={<IconButton><CameraIcon /></IconButton>}
         >
           <MenuItem  primaryText="拍照" onTouchTap={this.takePic.bind(this)}/>
           <MenuItem  primaryText="上传" />
         </IconMenu>
          <Checkbox
-            label="全选"
+            label=""
             checked={this.state.bSelAll}
             onCheck={this.toggleSelAll.bind(this)}
             style={styles.checkbox}
@@ -261,13 +267,13 @@ export default class App extends Component {
         </ToolbarGroup>
 
         <ToolbarGroup >
+       <ToolbarSeparator />
 
     <RaisedButton label="通过" primary={true} style={styles.button} disabled={!bSelOne}
     onTouchTap={this.handlePass.bind(this,true)} />
     <RaisedButton label="删除" secondary={true} style={styles.button} disabled={!bSelOne}
       onTouchTap={this.handleDeleteOpen.bind(this)}/>        
-        <ToolbarSeparator />
-        </ToolbarGroup>
+         </ToolbarGroup>
 </Toolbar>
         <ul>
           {this.renderPaints()}

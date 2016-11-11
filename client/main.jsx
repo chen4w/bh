@@ -1,8 +1,6 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor';
-import { render } from 'react-dom';
-import App from '../imports/ui/App.jsx';
-import Shooter from '../imports/ui/Shoot.jsx';
+import ReactDOM from 'react-dom';
 import { renderRoutes } from '../imports/startup/client/routes.jsx';
 
 import Response from 'meteor-node-stubs/node_modules/http-browserify/lib/response';
@@ -13,9 +11,9 @@ if (!Response.prototype.setEncoding) {
 }
 const settings = require('../settings.js');
 
-let inf={};
+ginf={};
 let socket = require('socket.io-client')('http://'+settings.host+':'+settings.port_sock);
-inf.sock = socket;
+ginf.sock = socket;
 socket.on('connect', function() {
   console.log('Client connected');
 });
@@ -24,18 +22,15 @@ socket.on('disconnect', function() {
 });
 socket.on('added', function(data) {
   console.log('added:'+data);
-  inf.app.onItemAdded(data);
+  ginf.app.onItemAdded(data);
 });
 socket.on('deleted', function(data) {
   console.log('deleted:'+data);
-  inf.app.onItemDeleted(data);
+  ginf.app.onItemDeleted(data);
 });
 
 Meteor.startup(() => {
   var injectTapEventPlugin = require("react-tap-event-plugin");
   injectTapEventPlugin();
-  inf.app = render(renderRoutes(), document.getElementById('app'));
-  //inf.app = render(<App />, document.getElementById('app'));
-    
-  console.log(app);
+  ReactDOM.render(renderRoutes(), document.getElementById('app'));
 });
