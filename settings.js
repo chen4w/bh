@@ -8,10 +8,17 @@ class Setting {
     this.host = '192.168.1.77';
     this.delay = 1000;
 
+    this.thumbnails_size=450;
+    this.thumbnails_uri ='tbnails';
+    this.thumbnails_cache = true;
+
     if(path.sep=='/')
       this.pic_root = "/Users/c4w/git/pics";
     else
       this.pic_root = "c:\\pics";
+
+    this.url_root = 'http://'+this.host+ ':'+this.port_web
+      +this.pic_url;
   }
 }
 module.exports =  (new Setting);

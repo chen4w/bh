@@ -13,6 +13,7 @@ import CameraIcon from 'material-ui/svg-icons/image/photo-camera';
 
 import AutoComplete from 'material-ui/AutoComplete';
 import RaisedButton from 'material-ui/RaisedButton';
+import Snackbar from 'material-ui/Snackbar';
 
 import Paint from './Paint.jsx';
 import Folder from './Folder.jsx';
@@ -20,6 +21,7 @@ import Folder from './Folder.jsx';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
  
+const settings = require('../../settings.js');
 const styles = {
   toolbar:{
     position: 'fixed',
@@ -55,7 +57,9 @@ export default class App extends Component {
       openDelete:false,
       sels:[],
       openFolder:false,
-      folders:[]
+      folders:[],
+      sb_open:true,
+      sb_msg:'正在请求图片...'
     };
     var me=this;
     Meteor.call('folder.listfolder', function(error, result){
@@ -67,6 +71,9 @@ export default class App extends Component {
         }
     });
     this.onDirChange(this.state.path);
+  }
+  handleSBClose(){
+    this.setState({sb_open:false,sb_msg:''});
   }
   componentDidMount() {
     ginf.app = this;
@@ -86,18 +93,21 @@ export default class App extends Component {
     });    
   }
   onItemAdded(data){
+    console.log('新加入图片：'+data);   
     let pics = this.state.pics;
     for(var k=0; k<data.length; k++){
       let dk = data[k];
       let ldk = dk.toLowerCase();
-      if(dk.indexOf(this.state.path)!=0 || 
+      //忽略抽点推送的抽点文件
+      if(
+        dk.indexOf(settings.thumbnails_uri)!=-1 ||
+        dk.indexOf(this.state.path)!=0 || 
         (!ldk.endsWith('.jpg')&& !ldk.endsWith('.png')&& !ldk.endsWith('.jpeg')))
         continue;
       let fn = dk.substring(this.state.path.length+1);
       pics.push({fn:fn});
     }   
-    this.setState({pics:pics});
-    console.log('pic added---'+data);   
+    this.setState({sb_open:true,sb_msg:'新加入图片：'+data,pics:pics});
   }
   onItemDeleted(data){
     //当前目录
@@ -122,8 +132,7 @@ export default class App extends Component {
         }
       }       
     }   
-    this.setState({pics:pics});
-    console.log('pic deleted--'+data);
+    this.setState({pics:pics,sb_open:true,sb_msg:'移除图片：'+data});
   }
   getChildContext() {
      return { muiTheme: getMuiTheme(baseTheme) };
@@ -134,8 +143,9 @@ export default class App extends Component {
         if(error){
             console.log(error);
         } else {
-          console.log(p1+'----'+result);
+            console.log('----正在请求图片：'+result);
             me.setState({path:p1,pics:result});
+            console.log('--请求结束--'+result);
         }
     });
   }
@@ -177,8 +187,8 @@ export default class App extends Component {
       sels:(checked?pics:[])});
   }
   toggleSel(pos,evt) {
-    console.log(pos);
-    event.preventDefault();
+    //console.log(pos);
+    //event.preventDefault();
     let pics = this.state.pics;
     let pic = pics[pos];
     let sels=[];
@@ -204,14 +214,18 @@ export default class App extends Component {
   };
 
   renderPaints() {
-    let path = this.state.path+'/';
+    //相对路径会导致ios设备无法获取到图片
+    let path_imgsrc = settings.url_root+ this.state.path.replace(/\\/g,'/')  +'/';
+    if(settings.thumbnails_size>0)
+      path_imgsrc+= settings.thumbnails_uri+settings.thumbnails_size +'/';
     return this.state.pics.map((pic,i) => (
-      <Paint key={i} pic={path+pic.fn} bsel={pic.bsel} par={this} pos={i}/>
+      <Paint key={i} pic={path_imgsrc+pic.fn} bsel={pic.bsel} par={this} pos={i}/>
     ));
   }
  
   render() {
      let bSelOne = this.state.sels.length>0?true:false;
+     let check_label = this.state.sels.length +'/'+this.state.pics.length;
      const actions = [
       <FlatButton
         label="取消"
@@ -257,7 +271,7 @@ export default class App extends Component {
           <MenuItem  primaryText="上传" />
         </IconMenu>
          <Checkbox
-            label=""
+            label={check_label}
             checked={this.state.bSelAll}
             onCheck={this.toggleSelAll.bind(this)}
             style={styles.checkbox}
@@ -278,6 +292,12 @@ export default class App extends Component {
         <ul>
           {this.renderPaints()}
         </ul>
+        <Snackbar
+          open={this.state.sb_open}
+          message={this.state.sb_msg}
+          autoHideDuration={4000}
+          onRequestClose={this.handleSBClose.bind(this)}
+        />
       </div>
     );
   }

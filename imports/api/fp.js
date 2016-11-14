@@ -57,7 +57,8 @@ class CFolder {
     //walk by absolute path, but return relative path
     let pn = fpath.substring(settings.pic_root.length+1);
     //exclude the root path
-    if(pn!="")
+    //忽略抽点目录
+    if(pn!="" && pn.indexOf(settings.thumbnails_uri)==-1)
       rl.push(pn);
     let me = this;
     let l = me.getChildren(fpath);

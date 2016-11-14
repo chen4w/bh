@@ -5,8 +5,6 @@ import Checkbox from 'material-ui/Checkbox';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
  
-const settings = require('../../settings.js');
-
 const style = {
   //height: 100,
   //width: 100,
@@ -31,14 +29,12 @@ export default class Paint extends Component {
      return { muiTheme: getMuiTheme(baseTheme) };
   }
   render() {
-    //相对路径会导致ios设备无法获取到图片
-    let imgsrc = 'http://'+settings.host+ ':'+settings.port_web
-      +settings.pic_url+ this.props.pic.replace(/\\/g,'/');
+    //选中增加阴影深度以示区别  
     let depth = this.props.bsel?5:1;
     return (
        <Paper style={style} zDepth={depth}  
        onClick={this.props.par.toggleSel.bind(this.props.par,this.props.pos)}>
-       <img width="250em" src={imgsrc}/>
+       <img width="250em" src={this.props.pic}/>
        </Paper>
       
     );
