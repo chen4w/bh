@@ -22,6 +22,9 @@ import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
  
 const settings = require('../../settings.js');
+const  MobileDetect = require('mobile-detect'),
+    mdd = new MobileDetect(navigator.userAgent);
+
 const styles = {
   toolbar:{
     position: 'fixed',
@@ -143,9 +146,10 @@ export default class App extends Component {
         if(error){
             console.log(error);
         } else {
-            console.log('----正在请求图片：'+result);
-            me.setState({path:p1,pics:result});
-            console.log('--请求结束--'+result);
+            //console.log('----正在请求图片：'+result);
+            me.setState({path:p1,pics:result,sb_open:true,
+              sb_msg:'当前目录共'+result.length+'张图'});
+            //console.log('--请求结束--'+result);
         }
     });
   }
@@ -218,9 +222,22 @@ export default class App extends Component {
     let path_imgsrc = settings.url_root+ this.state.path.replace(/\\/g,'/')  +'/';
     if(settings.thumbnails_size>0)
       path_imgsrc+= settings.thumbnails_uri+settings.thumbnails_size +'/';
-    return this.state.pics.map((pic,i) => (
-      <Paint key={i} pic={path_imgsrc+pic.fn} bsel={pic.bsel} par={this} pos={i}/>
-    ));
+    //是否限制显示前n张,规避pad上的性能问题,pc显示全部
+    console.log('ismobile:'+mdd.mobile());
+    if(!mdd.mobile()){
+      return this.state.pics.map((pic,i) => (
+        <Paint key={i} pic={path_imgsrc+pic.fn} bsel={pic.bsel} par={this} pos={i}/>
+      ));
+    }else{
+      let result = [];
+      let len = Math.min(this.state.pics.length,settings.show_limit);
+      for(var i=0; i<len; i++){
+        let pic = this.state.pics[i];
+        result.push( <Paint key={i} pic={path_imgsrc+pic.fn} bsel={pic.bsel} par={this} pos={i}/>);
+      }
+      console.log(result);
+      return result;
+    }
   }
  
   render() {

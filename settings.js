@@ -2,6 +2,8 @@ var path = require("path");
 
 class Setting {
   constructor() {
+    this.show_limit = 10;
+
     this.pic_url = '/img/';
     this.port_sock = 8200;
     this.port_web = 3000;
