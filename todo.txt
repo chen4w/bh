@@ -54,6 +54,10 @@ todo  跨终端网站思路：仿照百度云, 目录浏览+图标grid+ react图
   1. 移除了切换目录、通过等越权功能
   2. 只能看到和删除自己ip上传的图片
   3. 删除是直接删除
+  
+  对原始图和缩略图引入cache机制，目前缓存策略如下：
+    //缓存失效时间设置为1天, 每小时检查一次,不使用clone
+  const fsCache = new NodeCache({ stdTTL: 24*3600, checkperiod: 3600, useClones:false });
 
   todo: 拍照的宽高指定;
   每天的周期性任务——将upload/p upload/n 转移到 年/月/日 下归档
