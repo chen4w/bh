@@ -12,7 +12,7 @@ class Setting {
 
     this.thumbnails_size=450;
     this.thumbnails_uri ='tbnails';
-    this.thumbnails_cache = true;
+    this.fs_cache = true;
 
     if(path.sep=='/')
       this.pic_root = "/Users/c4w/git/pics";

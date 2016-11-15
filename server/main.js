@@ -10,6 +10,9 @@ Meteor.startup(() => {
   const fs = require('fs');
   const settings = require('../settings.js');
   const gm = require('gm').subClass({imageMagick: true});
+  const NodeCache = require( "node-cache" );
+  //缓存失效时间设置为1天, 每小时检查一次,不使用clone
+  const fsCache = new NodeCache({ stdTTL: 24*3600, checkperiod: 3600, useClones:false });
 
   //start dir watch
   watch();
@@ -18,9 +21,21 @@ Meteor.startup(() => {
   WebApp.connectHandlers.use(settings.pic_url, (req, res) => {
     let fp =  settings.pic_root + req.url.replace(/\//g,path.sep);
     let fpath = decodeURIComponent(fp);
-    console.log(fpath);
+     //先尝试读取缓存
+    let data = fsCache.get(fpath);
+    if(data){
+        res.writeHead(200, {'Content-Type': 'image'});
+        res.write(data);
+        res.end();
+        //console.log('hit cache:'+fpath);
+        return;      
+    }
     if(fs.existsSync(fpath)) {
-        let data = fs.readFileSync(fpath, data);
+        data = fs.readFileSync(fpath, data);
+        if(settings.fs_cache){
+          fsCache.set(fpath,data);
+          console.log('set cache:'+fpath);
+        }
         res.writeHead(200, {'Content-Type': 'image'});
         res.write(data);
         res.end();
@@ -40,19 +55,21 @@ Meteor.startup(() => {
       //抽点值>0 且源文件存在,返回抽点文件
       if(tbn_len>0 && fs.existsSync(fpath_src)){
         gm(fpath_src).resize(tbn_len).stream(function streamOut (err, stdout, stderr) {
-            if (err) return next(err);
+            if (err) 
+              return next(err);
             stdout.pipe(res); //pipe to response
-
-            //also pipe to fs
-            if(settings.thumbnails_cache){
-              let fdir = fpath.substring(0,p1);
-              if (!fs.existsSync(fdir)){
-                fs.mkdirSync(fdir);
-                console.log(fdir+" made");
-              }
-              let ws = fs.createWriteStream(fpath);
-              stdout.pipe(ws);
-            }
+            if(!settings.fs_cache)
+              return;
+            //cache thumbnail
+            let buf =[];
+            stdout.on('data', function(chunk) {
+              buf.push(chunk);
+            });
+            stdout.on('end', function() {
+              //缓存抽点图
+              let data = Buffer.concat(buf);
+              fsCache.set(fpath,data);
+            });  
         });
       }else{
         res.writeHead(404);

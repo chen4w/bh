@@ -84,8 +84,8 @@ export default class App extends Component {
   }
   takePic(){
         MeteorCamera.getPicture({  
-          width: 800,
-          height: 1600,
+          width: 1200,
+          height: 1200,
           quality: 75
         }, function (err, data) {
           if (err) {
