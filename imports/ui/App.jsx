@@ -80,7 +80,7 @@ export default class App extends Component {
   }
   componentDidMount() {
     ginf.app = this;
-    console.log('componentDidMount:'+this);
+    document.title='合规检查';
   }
   takePic(){
         MeteorCamera.getPicture({  

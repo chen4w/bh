@@ -72,7 +72,7 @@ export default class Shoot extends Component {
   }
   componentDidMount() {
     ginf.app = this;
-    console.log('componentDidMount:'+this);
+    document.title='拍照上传';
   }
   takePic(){
         MeteorCamera.getPicture({  
