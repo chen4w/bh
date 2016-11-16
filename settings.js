@@ -8,7 +8,7 @@ class Setting {
     this.port_sock = 8200;
     this.port_web = 3000;
     this.host = '192.168.1.77';
-    this.delay = 1000;
+    this.delay = 0;
 
     this.thumbnails_size=450;
     this.thumbnails_uri ='tbnails';

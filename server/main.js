@@ -59,18 +59,27 @@ Meteor.startup(() => {
         gm(fpath_src).resize(tbn_len).stream(function streamOut (err, stdout, stderr) {
             if (err) 
               return next(err);
-            stdout.pipe(res); //pipe to response
-            if(!settings.fs_cache)
+            if(!settings.fs_cache){
+              stdout.pipe(res); //pipe to response
               return;
+            }
             //cache thumbnail
-            let buf =[];
+            //let buf =[];
+            var buf = new Buffer(0);
+            console.log('begin:'+fpath);
             stdout.on('data', function(chunk) {
-              buf.push(chunk);
+              console.log('data:'+fpath +"\n"+ buf.length+ '+'+chunk.length);
+              buf = Buffer.concat([buf, chunk]);
+              //buf.push(chunk);
             });
             stdout.on('end', function() {
               //缓存抽点图
-              let data = Buffer.concat(buf);
-              fsCache.set(fpath,data);
+              console.log('end:'+fpath +'\n'+ buf.length);
+              //let data = Buffer.concat(buf);
+              fsCache.set(fpath,buf);
+              res.writeHead(200, {'Content-Type': 'image'});
+              res.write(buf);
+              res.end();
             });  
         });
       }else{

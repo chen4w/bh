@@ -20,6 +20,7 @@ export function watch(canvas, options) {
 
         var io = scope.network.io;
         // Watch all .js files/dirs in process.cwd()
+        console.log('watching '+settings.pic_root);
         gaze([filePath+'*.png',filePath+'*.jpg'], 
          {cwd: settings.pic_root}, 
           function(err, watcher) {
