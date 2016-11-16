@@ -23,7 +23,8 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
  
 const settings = require('../../settings.js');
 const  MobileDetect = require('mobile-detect'),
-    mdd = new MobileDetect(navigator.userAgent);
+    mdd = new MobileDetect(navigator.userAgent),
+    bMobile = mdd.mobile();
 
 const styles = {
   toolbar:{
@@ -34,7 +35,8 @@ const styles = {
   checkbox: {
     marginTop: 18,
     marginLeft: 12,
-  },
+    width: 100
+   },
   label: {
     marginTop: 20,
   },
@@ -95,19 +97,26 @@ export default class App extends Component {
             Meteor.call('pic.take', data,'/upload');
     });    
   }
+  getPicLen(){
+    if(!bMobile || !settings.show_limit)
+      return this.state.pics.length;
+    else
+      return Math.min(this.state.pics.length,settings.show_limit);
+  }
   onItemAdded(data){
-    console.log('新加入图片：'+data);   
+    //console.log('新加入图片：'+data);   
     let pics = this.state.pics;
+    let plen = this.state.path.length;
+
     for(var k=0; k<data.length; k++){
       let dk = data[k];
       let ldk = dk.toLowerCase();
-      //忽略抽点推送的抽点文件
-      if(
-        dk.indexOf(settings.thumbnails_uri)!=-1 ||
-        dk.indexOf(this.state.path)!=0 || 
+      //忽略抽点推送的抽点文件,忽略待处理目录下的/p /n 目录
+      let fn = dk.substring(plen+1);
+      if(dk.indexOf(this.state.path)!=0 
+        ||fn.indexOf('/')!=-1 || fn.indexOf('\\')!=-1 ||
         (!ldk.endsWith('.jpg')&& !ldk.endsWith('.png')&& !ldk.endsWith('.jpeg')))
         continue;
-      let fn = dk.substring(this.state.path.length+1);
       pics.push({fn:fn});
     }   
     this.setState({sb_open:true,sb_msg:'新加入图片：'+data,pics:pics});
@@ -116,10 +125,13 @@ export default class App extends Component {
     //当前目录
     let pics = this.state.pics;
     let sels = this.state.sels;
+    let plen = this.state.path.length;
     for(var k=0; k<data.length; k++){
-      if(data[k].indexOf(this.state.path)!=0)
+      let dk = data[k];
+      let fn = dk.substring(plen+1);
+      if(dk.indexOf(this.state.path)!=0 
+        ||fn.indexOf('/')!=-1 || fn.indexOf('\\')!=-1)
         continue;
-      let fn = data[k].substring(this.state.path.length+1);
       //remove paper
       for(var i=0; i<pics.length; i++){
         if(pics[i].fn==fn){
@@ -158,7 +170,7 @@ export default class App extends Component {
   }
   handleDeleteOpen(){
     this.setState({openDelete: true});
-  };
+  }
 
   handlePass(p1, p2){
     //pass or noPass pics
@@ -182,28 +194,33 @@ export default class App extends Component {
   
   toggleSelAll(evt, checked) {
     let pics = this.state.pics;
-    for(const p in pics){
-      pics[p].bsel = checked;
+    let len = this.getPicLen();
+    let sels=[];
+    for(var i=0; i<len; i++){
+      let pic = pics[i];
+      pic.bsel = checked;
+      sels.push(pic);
     }
     this.setState({
       bSelAll:checked,
       pics:pics,
-      sels:(checked?pics:[])});
+      sels:(checked?sels:[])});
   }
   toggleSel(pos,evt) {
-    //console.log(pos);
-    //event.preventDefault();
     let pics = this.state.pics;
     let pic = pics[pos];
     let sels=[];
     pic.bsel = !pic.bsel;
     
     let bSelAll=true;
-    for(const p in pics){
-      if(!pics[p].bsel){
+    let len = this.getPicLen();
+
+    for(var i=0; i<len; i++){
+      let pic = pics[i];
+      if(!pic.bsel){
        bSelAll=false;
       }else{
-        sels.push(pics[p]);
+        sels.push(pic);
       }
     }
     this.setState({
@@ -215,7 +232,7 @@ export default class App extends Component {
    
   handleCloseDelete(){
     this.setState({openDelete: false});
-  };
+  }
 
   renderPaints() {
     //相对路径会导致ios设备无法获取到图片
@@ -224,20 +241,13 @@ export default class App extends Component {
       path_imgsrc+= settings.thumbnails_uri+settings.thumbnails_size +'/';
     //是否限制显示前n张,规避pad上的性能问题,pc显示全部
     //console.log('ismobile:'+mdd.mobile());
-    if(!mdd.mobile()){
-      return this.state.pics.map((pic,i) => (
-        <Paint key={i} pic={path_imgsrc+pic.fn} bsel={pic.bsel} par={this} pos={i}/>
-      ));
-    }else{
-      let result = [];
-      let len = Math.min(this.state.pics.length,settings.show_limit);
-      for(var i=0; i<len; i++){
+    let len = this.getPicLen();
+    let result = [];
+    for(var i=0; i<len; i++){
         let pic = this.state.pics[i];
         result.push( <Paint key={i} pic={path_imgsrc+pic.fn} bsel={pic.bsel} par={this} pos={i}/>);
-      }
-      //console.log(result);
-      return result;
     }
+    return result;
   }
  
   render() {
@@ -287,13 +297,6 @@ export default class App extends Component {
           <MenuItem  primaryText="拍照" onTouchTap={this.takePic.bind(this)}/>
           <MenuItem  primaryText="上传" />
         </IconMenu>
-         <Checkbox
-            label={check_label}
-            checked={this.state.bSelAll}
-            onCheck={this.toggleSelAll.bind(this)}
-            style={styles.checkbox}
-            labelStyle={styles.label_check}
-          />
 
         </ToolbarGroup>
 
@@ -303,7 +306,16 @@ export default class App extends Component {
     <RaisedButton label="通过" primary={true} style={styles.button} disabled={!bSelOne}
     onTouchTap={this.handlePass.bind(this,true)} />
     <RaisedButton label="删除" secondary={true} style={styles.button} disabled={!bSelOne}
-      onTouchTap={this.handleDeleteOpen.bind(this)}/>        
+      onTouchTap={this.handleDeleteOpen.bind(this)}/>       
+
+       <Checkbox
+            label={check_label}
+            checked={this.state.bSelAll}
+            onCheck={this.toggleSelAll.bind(this)}
+            style={styles.checkbox}
+            labelStyle={styles.label_check}
+          />
+ 
          </ToolbarGroup>
 </Toolbar>
         <ul>

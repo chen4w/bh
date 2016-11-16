@@ -88,18 +88,19 @@ export default class Shoot extends Component {
     });    
   }
   onItemAdded(data){
-    console.log('新加入图片：'+data);   
+    //console.log('新加入图片：'+data);   
     let pics = this.state.pics;
+    let plen = this.state.path.length;
+
     for(var k=0; k<data.length; k++){
       let dk = data[k];
       let ldk = dk.toLowerCase();
+      let fn = dk.substring(plen+1);
       //忽略抽点推送的抽点文件
-      if(
-        dk.indexOf(settings.thumbnails_uri)!=-1 ||
-        dk.indexOf(this.state.path)!=0 || 
+      if(dk.indexOf(this.state.path)!=0 || 
+         fn.indexOf('/')!=-1 || fn.indexOf('\\')!=-1 ||
         (!ldk.endsWith('.jpg')&& !ldk.endsWith('.png')&& !ldk.endsWith('.jpeg')))
         continue;
-      let fn = dk.substring(this.state.path.length+1);
       pics.push({fn:fn});
     }   
     this.setState({sb_open:true,sb_msg:'新加入图片：'+data,pics:pics});
@@ -108,10 +109,14 @@ export default class Shoot extends Component {
     //当前目录
     let pics = this.state.pics;
     let sels = this.state.sels;
+    let plen = this.state.path.length;
+
     for(var k=0; k<data.length; k++){
-      if(data[k].indexOf(this.state.path)!=0)
-        continue;
-      let fn = data[k].substring(this.state.path.length+1);
+      let dk = data[k];
+      let fn = dk.substring(plen+1);
+
+      if(dk.indexOf(this.state.path)!=0 
+        ||fn.indexOf('/')!=-1 || fn.indexOf('\\')!=-1)
       //remove paper
       for(var i=0; i<pics.length; i++){
         if(pics[i].fn==fn){
@@ -147,7 +152,7 @@ export default class Shoot extends Component {
   }
   handleDeleteOpen(){
     this.setState({openDelete: true});
-  };
+  }
 
   handleDelete(){
     //pass or noPass pics
@@ -165,7 +170,7 @@ export default class Shoot extends Component {
          }
          me.setState({openDelete: false});
     });    
-  };
+  }
   
   toggleSelAll(evt, checked) {
     let pics = this.state.pics;
@@ -202,7 +207,7 @@ export default class Shoot extends Component {
    
   handleCloseDelete(){
     this.setState({openDelete: false});
-  };
+  }
 
   renderPaints() {
     //相对路径会导致ios设备无法获取到图片
