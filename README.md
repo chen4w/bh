@@ -14,7 +14,7 @@ BeHere的后端服务,用Meteor搭建,通过Mac和Win下测试
 -----------------------------------
 * 前端组件用React + Material-ui
 * 采用React router路由url
-* gaze监视文件目录
+* chokidar监视文件目录
 * websocket推送文件变更消息
 * Meteor.call 调用后端api
 * node-cache 缓存文件

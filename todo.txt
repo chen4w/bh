@@ -68,4 +68,11 @@ todo  跨终端网站思路：仿照百度云, 目录浏览+图标grid+ react图
   修正了checkbox宽度遮挡button的问题
   修正了删除、通过 推送消息的误判 本目录下的/p /n目录add delete应忽略
 
-  todo: gaze消息当图片开始生成就产生，极端情况仍然会造成抽点失败（即原始图未准备好，导致抽点图为0）
+  todo:
+     gaze消息当图片开始生成就产生，极端情况仍然会造成抽点失败（即原始图未准备好，导致抽点图为0）
+     mac存在怪现象，如果upload下一张图都没有，gaze 就不触发 add delete 消息？？
+  
+  用chokidar 取代gaze解决了上述两个问题，chokidar会一直检查文件大小是否增加，直到stabilityThreshold秒
+
+todo: HS也应当采用chokidar 取代gaze
+
