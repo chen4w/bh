@@ -9,7 +9,9 @@ Meteor.startup(() => {
   const path = require('path');
   const fs = require('fs');
   const settings = require('../settings.js');
-  const gm = require('gm').subClass({imageMagick: true});
+  //for mac
+  //const gm = require('gm').subClass({imageMagick: true});
+  const gm = require('gm');
   const NodeCache = require( "node-cache" );
   //缓存失效时间设置为1天, 每小时检查一次,不使用clone
   const fsCache = new NodeCache({ stdTTL: 24*3600, checkperiod: 3600, useClones:false });

@@ -6,6 +6,7 @@ BeHere的后端服务,用Meteor搭建,通过Mac和Win下测试
 * git clone 到本地
 * npm install 安装依赖组件
 * [Win下单独安装GraphicsMagick] (http://www.graphicsmagick.org/)
+* [Mac下单独安装GraphicsMagick] (https://www.npmjs.com/package/gm)
 * meteor 
 * 或者 meteor debug
 
