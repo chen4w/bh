@@ -223,7 +223,7 @@ export default class App extends Component {
     if(settings.thumbnails_size>0)
       path_imgsrc+= settings.thumbnails_uri+settings.thumbnails_size +'/';
     //是否限制显示前n张,规避pad上的性能问题,pc显示全部
-    console.log('ismobile:'+mdd.mobile());
+    //console.log('ismobile:'+mdd.mobile());
     if(!mdd.mobile()){
       return this.state.pics.map((pic,i) => (
         <Paint key={i} pic={path_imgsrc+pic.fn} bsel={pic.bsel} par={this} pos={i}/>
@@ -235,7 +235,7 @@ export default class App extends Component {
         let pic = this.state.pics[i];
         result.push( <Paint key={i} pic={path_imgsrc+pic.fn} bsel={pic.bsel} par={this} pos={i}/>);
       }
-      console.log(result);
+      //console.log(result);
       return result;
     }
   }

@@ -7,7 +7,7 @@ import Shooter from '../../ui/Shoot.jsx';
 
 export const renderRoutes = () => (
   <Router history={browserHistory}>
-    <Route path="/admin" component={AppContainer}>
+    <Route path="/" component={AppContainer}>
       <Route path=":path" component={AppContainer}/>
     </Route>
    <Route path='shoot' component={Shooter} />
