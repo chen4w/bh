@@ -44,6 +44,10 @@ export default class Home extends Component {
   getChildContext() {
      return { muiTheme: getMuiTheme(baseTheme) };
   }
+  componentDidMount() {
+    ginf.app = null;
+    document.title='功能导览';
+  }
   
   render() {
     //选中增加阴影深度以示区别  

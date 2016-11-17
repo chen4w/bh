@@ -22,11 +22,13 @@ socket.on('disconnect', function() {
 });
 socket.on('added', function(data) {
   console.log('added:'+data);
-  ginf.app.onItemAdded(data);
+  if(ginf.app)
+    ginf.app.onItemAdded(data);
 });
 socket.on('deleted', function(data) {
   console.log('deleted:'+data);
-  ginf.app.onItemDeleted(data);
+  if(ginf.app)
+    ginf.app.onItemDeleted(data);
 });
 
 Meteor.startup(() => {
