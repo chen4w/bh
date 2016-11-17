@@ -34,6 +34,7 @@ const styles = {
   },
   checkbox: {
     marginTop: 18,
+    marginBottom: 12,
     marginLeft: 12,
     width: 100
    },
@@ -279,16 +280,25 @@ export default class App extends Component {
 
     <Toolbar style={styles.toolbar}>
         <ToolbarGroup firstChild={true}>
+       <Checkbox
+            label={check_label}
+            checked={this.state.bSelAll}
+            onCheck={this.toggleSelAll.bind(this)}
+            style={styles.checkbox}
+            labelStyle={styles.label_check}
+          />
   
-    <AutoComplete
-      hintText="输入目录路径"
-      filter={AutoComplete.fuzzyFilter}
-      dataSource={this.state.folders}
-      maxSearchResults={5}
-      onNewRequest={this.onDirChange.bind(this)}
-      searchText={this.state.path}
-      style={styles.auto_complete}
-    />
+    <RaisedButton label="通过" primary={true} style={styles.button} disabled={!bSelOne}
+    onTouchTap={this.handlePass.bind(this,true)} />
+    <RaisedButton label="删除" secondary={true} style={styles.button} disabled={!bSelOne}
+      onTouchTap={this.handleDeleteOpen.bind(this)}/>       
+
+        </ToolbarGroup>
+
+        <ToolbarGroup >
+       <ToolbarSeparator />
+
+
     
         <IconMenu
           style={styles.btn_ico}
@@ -298,23 +308,15 @@ export default class App extends Component {
           <MenuItem  primaryText="上传" />
         </IconMenu>
 
-        </ToolbarGroup>
-
-        <ToolbarGroup >
-       <ToolbarSeparator />
-
-    <RaisedButton label="通过" primary={true} style={styles.button} disabled={!bSelOne}
-    onTouchTap={this.handlePass.bind(this,true)} />
-    <RaisedButton label="删除" secondary={true} style={styles.button} disabled={!bSelOne}
-      onTouchTap={this.handleDeleteOpen.bind(this)}/>       
-
-       <Checkbox
-            label={check_label}
-            checked={this.state.bSelAll}
-            onCheck={this.toggleSelAll.bind(this)}
-            style={styles.checkbox}
-            labelStyle={styles.label_check}
-          />
+    <AutoComplete
+      hintText="输入目录路径"
+      filter={AutoComplete.fuzzyFilter}
+      dataSource={this.state.folders}
+      maxSearchResults={5}
+      onNewRequest={this.onDirChange.bind(this)}
+      searchText={this.state.path}
+      style={styles.auto_complete}
+    />
  
          </ToolbarGroup>
 </Toolbar>
