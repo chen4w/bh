@@ -11,21 +11,6 @@ import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 const styles = {
-
-    inner: {
-        //backgroundColor: 'yellow',
-        position:'absolute',
-        left:'50%',
-        top:'50%',
-        margin: '-80px 0 0 -240px'
-    },    
-    btn:{
-        height: 120,
-        width: 120,
-        margin: 20,
-        textAlign: 'center',
-        display: 'inline-block',
-    },
     largeIcon: {
         width: 90,
         height: 90,
@@ -52,18 +37,18 @@ export default class Home extends Component {
   render() {
     //选中增加阴影深度以示区别  
     return (
-        <div style={styles.inner}>
+        <div id="home_nner">
             <Link to='/admin'>
-            <Paper style={styles.btn} zDepth={2} circle={true} >
+            <Paper  zDepth={2} circle={true} >
                 <CheckIcon style={styles.largeIcon} color={grey500} hoverColor={grey900} />
             </Paper>
             </Link>
             <Link to='/shoot'>
-            <Paper style={styles.btn} zDepth={2} circle={true} >
+            <Paper  zDepth={2} circle={true} >
                 <CameraIcon style={styles.largeIcon}  color={grey500} hoverColor={grey900} />
             </Paper>
             </Link>
-            <Paper style={styles.btn} zDepth={2} circle={true} >
+            <Paper  zDepth={2} circle={true} >
                 <ShareIcon style={styles.largeIcon} color={grey500} hoverColor={grey900} />
             </Paper>
         </div>      
