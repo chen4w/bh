@@ -12,9 +12,9 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 const styles = {
     largeIcon: {
-        width: 90,
-        height: 90,
-        padding: 15
+        width: '4.5em',
+        height: '4.5em',
+        padding: '0.75em'
   },
 }
 
