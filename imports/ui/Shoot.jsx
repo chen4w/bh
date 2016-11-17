@@ -34,6 +34,8 @@ const styles = {
   checkbox: {
     marginTop: 18,
     marginLeft: 12,
+    marginBottom: 12,
+    width: 100
   },
   label: {
     marginTop: 20,
@@ -43,7 +45,7 @@ const styles = {
   },
   button:{margin: 12,},
   btn_ico:{marginTop: 8, marginRight:22},
-  auto_complete:{marginTop: 5,marginLeft: 20,width:200}
+  auto_complete:{marginTop: 5,marginLeft: 20,width:150}
 }; 
 // App component - represents the whole app
 export default class Shoot extends Component {
@@ -261,28 +263,28 @@ export default class Shoot extends Component {
 
     <Toolbar style={styles.toolbar}>
         <ToolbarGroup firstChild={true}>    
-        <IconMenu
-          style={styles.btn_ico}
-          iconButtonElement={<IconButton><CameraIcon /></IconButton>}
-        >
-          <MenuItem  primaryText="拍照" onTouchTap={this.takePic.bind(this)}/>
-          <MenuItem  primaryText="上传" />
-        </IconMenu>
-         <Checkbox
+          <Checkbox
             label={check_label}
             checked={this.state.bSelAll}
             onCheck={this.toggleSelAll.bind(this)}
             style={styles.checkbox}
             labelStyle={styles.label_check}
           />
+     <RaisedButton label="删除" secondary={true} style={styles.button} disabled={!bSelOne}
+      onTouchTap={this.handleDeleteOpen.bind(this)}/>        
 
         </ToolbarGroup>
 
         <ToolbarGroup >
        <ToolbarSeparator />
+      <IconMenu
+          style={styles.btn_ico}
+          iconButtonElement={<IconButton><CameraIcon /></IconButton>}
+        >
+          <MenuItem  primaryText="拍照" onTouchTap={this.takePic.bind(this)}/>
+          <MenuItem  primaryText="上传" />
+        </IconMenu>
 
-    <RaisedButton label="删除" secondary={true} style={styles.button} disabled={!bSelOne}
-      onTouchTap={this.handleDeleteOpen.bind(this)}/>        
          </ToolbarGroup>
 </Toolbar>
         <ul>
