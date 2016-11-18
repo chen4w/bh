@@ -39,8 +39,7 @@ export function watch() {
                 pollInterval: 100
             }
         });   
-        watcher
-        .on('add', fp => {
+        watcher.on('add', fp => {
             cacheFile(getTbPath(fp),function(data){
                 io.emit('added',[fp]);
             });

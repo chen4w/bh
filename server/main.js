@@ -3,25 +3,26 @@ import '../imports/api/folder.js';
 
 import {watch} from  './guard.js';
 
-  //for windows and mac path
-  const path = require('path');
-  const fs = require('fs');
-  const settings = require('../settings.js');
-  //for mac
-  //const gm = require('gm').subClass({imageMagick: true});
-  const gm = require('gm');
-  const NodeCache = require( "node-cache" );
-  //缓存失效时间设置为1天, 每小时检查一次,不使用clone
-  const fsCache = new NodeCache({ stdTTL: 24*3600, checkperiod: 3600, useClones:false });
+//for windows and mac path
+const path = require('path');
+const fs = require('fs');
+const settings = require('../settings.js');
+//for mac
+//const gm = require('gm').subClass({imageMagick: true});
+const gm = require('gm');
+const NodeCache = require( "node-cache" );
+//缓存失效时间设置为1天, 每小时检查一次,不使用clone
+const fsCache = new NodeCache({ stdTTL: 24*3600, checkperiod: 3600, useClones:false });
+
+const path_tbn = settings.thumbnails_uri + settings.thumbnails_size+path.sep;
 
 //cache原始图或抽点图,tbn_len=0:原始图, tbn_len>0 抽点图 
 export function cacheFile(fpath,func) {
   //非抽点图
   if(fs.existsSync(fpath)) {
-    data = fs.readFileSync(fpath, data);
+    let data = fs.readFileSync(fpath);
     if(settings.fs_cache){
       fsCache.set(fpath,data);
-      console.log('set cache:'+fpath);
     }
     if(func){
       func(data);
@@ -39,38 +40,62 @@ export function cacheFile(fpath,func) {
         }
       }
       let fpath_src = fpath.substring(0,p0)+fpath.substring(p1);
-      //抽点值>0 且源文件存在,返回抽点文件
-      if(tbn_len>0 && fs.existsSync(fpath_src)){
-        //todo 优化性能,如果cache中有，直接从cache中读取
-        gm(fpath_src).resize(tbn_len).stream(function streamOut (err, stdout, stderr) {
-            if (err){
-              console.log(err);
-              return next(err);
-            } 
-            //cache thumbnail
-            let buf =[];
-            stdout.on('data', function(chunk) {
-              buf.push(chunk);
-            });
-            stdout.on('end', function() {
-              //缓存抽点图
-              let data = Buffer.concat(buf);
-              fsCache.set(fpath,data);
-              if(func)
-                func(data);
-            });  
-        });
-      }else{
-        if(func)
+      //文件不存在
+      if(tbn_len<=0 || !fs.existsSync(fpath_src)){
+        console.log(fpath_src+' not found.')
+        if(func){
           func(null);
+        }
+        return;
       }
+      //抽点值>0 且源文件存在,返回抽点文件
+      //优化性能,如果cache中有，直接从cache中读取
+    let buf_src = fsCache.get(fpath_src);
+    if(!buf_src){
+      buf_src = fs.readFileSync(fpath_src);
+      fsCache.set(fpath_src,buf_src);
     }
-  console.log('cache:'+fpath+'---');
+    gm(buf_src).resize(tbn_len).toBuffer(
+      path.extname(fpath_src),
+      function(err, buf) {
+        if (err){
+          console.log(err);
+          if(func){
+            func(null);
+          }
+          return next(err);
+        } 
+        //cache thumbnail
+        fsCache.set(fpath,buf);
+        if(func)
+          func(buf);
+    });
+  }
+}
+
+//缓存目录下所有图片,预先生成抽点
+function cachePath(fpath){
+  //列出目录下所有文件
+  let ls = fs.readdirSync(fpath).filter(function(file) {
+      let en = path.extname(file);
+      if((en ==='.jpg' || en==='.png') && 
+        fs.statSync(path.join(fpath, file)).isFile())
+        return true;
+      else
+        return false;
+  });
+  console.log('caching '+ls.length+' pics from:'+ fpath);
+  ls.forEach(function (item, index, array) {
+    let fn = fpath+ path.sep + path_tbn + item;
+    cacheFile(fn);
+  });
 }
 
 Meteor.startup(() => {
   //start dir watch
   watch();
+  //cache pic_upload path
+  cachePath(settings.pic_root+ path.sep + settings.pic_upload);
   //a simple static files server for easy deploy 
   WebApp.connectHandlers.use(settings.pic_url, (req, res) => {
     let fp =  settings.pic_root + req.url.replace(/\//g,path.sep);
@@ -81,7 +106,6 @@ Meteor.startup(() => {
         res.writeHead(200, {'Content-Type': 'image'});
         res.write(data);
         res.end();
-        console.log('hit cache:'+fpath);
         return;      
     }
     cacheFile(fpath,function(data){
@@ -94,55 +118,5 @@ Meteor.startup(() => {
         res.end();
       }
     });
-   /* if(fs.existsSync(fpath)) {
-        data = fs.readFileSync(fpath, data);
-        if(settings.fs_cache){
-          fsCache.set(fpath,data);
-          console.log('set cache:'+fpath);
-        }
-        res.writeHead(200, {'Content-Type': 'image'});
-        res.write(data);
-        res.end();
-    }else{
-      //处理抽点规则
-      let p1 = fpath.lastIndexOf(path.sep);
-      let p0 = fpath.lastIndexOf(path.sep,p1-1);
-      let tbn_len = 0;
-      if(p0!=-1 && p1!=-1){
-        let fsize = fpath.substring(p0+1,p1);
-        if(fsize.indexOf(settings.thumbnails_uri)==0){
-          let tbn = fsize.substring(settings.thumbnails_uri.length);
-          tbn_len = parseInt(tbn);
-        }
-      }
-      let fpath_src = fpath.substring(0,p0)+fpath.substring(p1);
-      //抽点值>0 且源文件存在,返回抽点文件
-      if(tbn_len>0 && fs.existsSync(fpath_src)){
-        //todo 优化性能,如果cache中有，直接从cache中读取
-        gm(fpath_src).resize(tbn_len).stream(function streamOut (err, stdout, stderr) {
-            if (err){
-              console.log(err);
-              return next(err);
-            } 
-            stdout.pipe(res); //pipe to response
-            if(!settings.fs_cache){
-              return;
-            }
-            //cache thumbnail
-            let buf =[];
-            stdout.on('data', function(chunk) {
-              buf.push(chunk);
-            });
-            stdout.on('end', function() {
-              //缓存抽点图
-              let data = Buffer.concat(buf);
-              fsCache.set(fpath,data);
-            });  
-        });
-      }else{
-        res.writeHead(404);
-        res.end(fpath+" not found");
-      }
-    }*/
   });
 });
