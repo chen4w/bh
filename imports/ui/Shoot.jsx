@@ -119,6 +119,7 @@ export default class Shoot extends Component {
 
       if(dk.indexOf(this.state.path)!=0 
         ||fn.indexOf('/')!=-1 || fn.indexOf('\\')!=-1)
+        continue;
       //remove paper
       for(var i=0; i<pics.length; i++){
         if(pics[i].fn==fn){
