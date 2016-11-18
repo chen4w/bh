@@ -1,12 +1,23 @@
 import http from 'http';
 import socket_io from 'socket.io';
+import {cacheFile} from  './main.js';
 
 const path = require("path");
 const async = require('async');
 const fs=require('fs');
 const settings = require('../settings.js');
 
-export function watch(canvas, options) {
+const path_tbn = settings.thumbnails_uri + settings.thumbnails_size+path.sep;
+
+function getTbPath(fp){
+    let p0 = fp.lastIndexOf(path.sep);
+    if(p0!=-1){
+        return settings.pic_root + path.sep+ fp.substring(0,p0+1)+path_tbn+fp.substring(p0+1);
+    }else{
+        return settings.pic_root + path.sep + path_tbn + fp;
+    }
+}
+export function watch() {
     const root_len= settings.pic_root.length+1;
     async.auto({  
     config: function(cb){
@@ -30,11 +41,14 @@ export function watch(canvas, options) {
         });   
         watcher
         .on('add', fp => {
-            console.log('added:'+fp);
-            io.emit('added',[fp]);
+            cacheFile(getTbPath(fp),function(data){
+                io.emit('added',[fp]);
+            });
         })
         .on('change', fp => {
-            io.emit('added',[fp]);
+            cacheFile(getTbPath(fp),function(data){
+                io.emit('added',[fp]);
+            });
         })
         .on('unlink', fp => {
             io.emit('deleted',[fp]);
