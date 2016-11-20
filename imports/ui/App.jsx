@@ -137,7 +137,7 @@ export default class App extends Component {
     let pics = this.state.pics;
     let sels = this.state.sels;
     let plen = this.state.path.length;
-    bsel = false;
+    let bsel = false;
     for(var k=0; k<data.length; k++){
       let dk = data[k];
       let fn = dk.substring(plen+1);
@@ -314,15 +314,11 @@ export default class App extends Component {
         <ToolbarGroup >
        <ToolbarSeparator />
 
-
-    
-        <IconMenu
-          style={styles.btn_ico}
-          iconButtonElement={<IconButton><CameraIcon /></IconButton>}
-        >
-          <MenuItem  primaryText="拍照" onTouchTap={this.takePic.bind(this)}/>
-          <MenuItem  primaryText="上传" />
-        </IconMenu>
+    <IconButton tooltip="Take Picture"
+      onTouchTap={this.takePic.bind(this)}
+    >
+      <CameraIcon />
+    </IconButton>
 
     <AutoComplete
       hintText="输入目录路径"

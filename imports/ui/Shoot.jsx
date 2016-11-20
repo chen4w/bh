@@ -84,11 +84,13 @@ export default class Shoot extends Component {
     document.title='拍照上传';
   }
   takePic(){
+    var me = this;
         MeteorCamera.getPicture({  
           width: 800,
           height: 1600,
           quality: 75
         }, function (err, data) {
+          me.setState({bLoading:true});
           if (err) {
             console.log('error', err);
           }
@@ -100,7 +102,7 @@ export default class Shoot extends Component {
     //console.log('新加入图片：'+data);   
     let pics = this.state.pics;
     let plen = this.state.path.length;
-
+    let bsel = false;
     for(var k=0; k<data.length; k++){
       let dk = data[k];
       let ldk = dk.toLowerCase();
@@ -111,15 +113,20 @@ export default class Shoot extends Component {
         (!ldk.endsWith('.jpg')&& !ldk.endsWith('.png')&& !ldk.endsWith('.jpeg')))
         continue;
       pics.push({fn:fn});
+      bsel = true;
     }   
-    this.setState({sb_open:true,sb_msg:'新加入图片：'+data,pics:pics});
+    let ns = {sb_open:true,sb_msg:'新加入图片：'+data,pics:pics};
+    //如果是本人上传的,隐藏loading图标
+    if(bsel)
+      ns.bLoading=false;
+    this.setState(ns);
   }
   onItemDeleted(data){
     //当前目录
     let pics = this.state.pics;
     let sels = this.state.sels;
     let plen = this.state.path.length;
-    bsel =false;
+    let bsel =false;
     for(var k=0; k<data.length; k++){
       let dk = data[k];
       let fn = dk.substring(plen+1);
@@ -144,6 +151,7 @@ export default class Shoot extends Component {
       }       
     }   
     let ns = {pics:pics,sb_open:true,sb_msg:'移除图片：'+data};
+    //如果是本人删除的,隐藏loading图标
     if(bsel)
       ns.bLoading=false;
     this.setState(ns);
@@ -289,13 +297,12 @@ export default class Shoot extends Component {
 
         <ToolbarGroup >
        <ToolbarSeparator />
-      <IconMenu
-          style={styles.btn_ico}
-          iconButtonElement={<IconButton><CameraIcon /></IconButton>}
-        >
-          <MenuItem  primaryText="拍照" onTouchTap={this.takePic.bind(this)}/>
-          <MenuItem  primaryText="上传" />
-        </IconMenu>
+
+    <IconButton tooltip="Take Picture"
+      onTouchTap={this.takePic.bind(this)}
+    >
+      <CameraIcon />
+    </IconButton>
 
          </ToolbarGroup>
 </Toolbar>
