@@ -15,6 +15,9 @@ import AutoComplete from 'material-ui/AutoComplete';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 
+import RefreshIndicator from 'material-ui/RefreshIndicator';
+
+
 import Paint from './Paint.jsx';
 import Folder from './Folder.jsx';
 
@@ -27,6 +30,12 @@ const  MobileDetect = require('mobile-detect'),
     bMobile = mdd.mobile();
 
 const styles = {
+  refresh: {
+    position: 'fixed',
+    left: '50%',
+    top:'50%',
+  },
+
   toolbar:{
     position: 'fixed',
     top: 0,
@@ -65,7 +74,8 @@ export default class App extends Component {
       openFolder:false,
       folders:[],
       sb_open:true,
-      sb_msg:'正在请求图片...'
+      sb_msg:'正在请求图片...',
+      bLoading:false,
     };
     var me=this;
     Meteor.call('folder.listfolder', function(error, result){
@@ -127,6 +137,7 @@ export default class App extends Component {
     let pics = this.state.pics;
     let sels = this.state.sels;
     let plen = this.state.path.length;
+    bsel = false;
     for(var k=0; k<data.length; k++){
       let dk = data[k];
       let fn = dk.substring(plen+1);
@@ -144,11 +155,17 @@ export default class App extends Component {
       for(var i=0; i<sels.length; i++){
         if(sels[i].fn==fn){
           sels.splice(i,1);
+          bsel = true;
           break;
         }
       }       
     }   
-    this.setState({pics:pics,sb_open:true,sb_msg:'移除图片：'+data});
+    //如果删除的是本人选中的，判定操作已完成，隐藏Loading图标
+    let ns = {pics:pics,sb_open:true,sb_msg:'移除图片：'+data};
+    if(bsel){
+      ns.bLoading = false;
+    }
+    this.setState(ns);
   }
   getChildContext() {
      return { muiTheme: getMuiTheme(baseTheme) };
@@ -182,14 +199,13 @@ export default class App extends Component {
     this.state.sels.forEach(function (item, index, array) {
       pics.push(path+item.fn);
     });
-    console.log(pics);
+    me.setState({openDelete: false,bLoading:true});
     Meteor.call('pic.pass',pics,p1, function(error, result){
         if(error){
             console.log(error);
         } else {
             console.log(result);
          }
-         me.setState({openDelete: false});
     });    
   };
   
@@ -291,7 +307,7 @@ export default class App extends Component {
     <RaisedButton label="通过" primary={true} style={styles.button} disabled={!bSelOne}
     onTouchTap={this.handlePass.bind(this,true)} />
     <RaisedButton label="删除" secondary={true} style={styles.button} disabled={!bSelOne}
-      onTouchTap={this.handleDeleteOpen.bind(this)}/>       
+      onTouchTap={this.handleDeleteOpen.bind(this)}/>    
 
         </ToolbarGroup>
 
@@ -320,6 +336,19 @@ export default class App extends Component {
  
          </ToolbarGroup>
 </Toolbar>
+
+{ this.state.bLoading?
+  <div style={styles.refresh}>
+    <RefreshIndicator
+      size={80}
+      loadingColor="#FF9800"
+      status="loading"
+      top={-40}
+      left={-40}
+    />
+  </div> :''
+}
+
         <ul>
           {this.renderPaints()}
         </ul>

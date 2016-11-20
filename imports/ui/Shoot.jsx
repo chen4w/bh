@@ -14,6 +14,7 @@ import CameraIcon from 'material-ui/svg-icons/image/photo-camera';
 import AutoComplete from 'material-ui/AutoComplete';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 
 import Paint from './Paint.jsx';
 import Folder from './Folder.jsx';
@@ -26,6 +27,11 @@ const  MobileDetect = require('mobile-detect'),
     mdd = new MobileDetect(navigator.userAgent);
 
 const styles = {
+  refresh: {
+    position: 'fixed',
+    left: '50%',
+    top:'50%',
+  },
   toolbar:{
     position: 'fixed',
     top: 0,
@@ -64,7 +70,8 @@ export default class Shoot extends Component {
       openFolder:false,
       folders:[],
       sb_open:true,
-      sb_msg:'正在请求图片...'
+      sb_msg:'正在请求图片...',
+      bLoading:false,
     };
     var me=this;
     this.onDirChange(this.state.path);
@@ -112,7 +119,7 @@ export default class Shoot extends Component {
     let pics = this.state.pics;
     let sels = this.state.sels;
     let plen = this.state.path.length;
-
+    bsel =false;
     for(var k=0; k<data.length; k++){
       let dk = data[k];
       let fn = dk.substring(plen+1);
@@ -131,11 +138,15 @@ export default class Shoot extends Component {
       for(var i=0; i<sels.length; i++){
         if(sels[i].fn==fn){
           sels.splice(i,1);
+          bsel = true;
           break;
         }
       }       
     }   
-    this.setState({pics:pics,sb_open:true,sb_msg:'移除图片：'+data});
+    let ns = {pics:pics,sb_open:true,sb_msg:'移除图片：'+data};
+    if(bsel)
+      ns.bLoading=false;
+    this.setState(ns);
   }
   getChildContext() {
      return { muiTheme: getMuiTheme(baseTheme) };
@@ -165,13 +176,13 @@ export default class Shoot extends Component {
     this.state.sels.forEach(function (item, index, array) {
       pics.push(path+item.fn);
     });
+    me.setState({openDelete: false,bLoading:true});
     Meteor.call('pic.remove',pics,function(error, result){
         if(error){
             console.log(error);
         } else {
             console.log(result);
          }
-         me.setState({openDelete: false});
     });    
   }
   
@@ -288,9 +299,24 @@ export default class Shoot extends Component {
 
          </ToolbarGroup>
 </Toolbar>
+
+{ this.state.bLoading?
+  <div style={styles.refresh}>
+    <RefreshIndicator
+      size={80}
+      loadingColor="#FF9800"
+      status="loading"
+      top={-40}
+      left={-40}
+    />
+  </div> :''
+}
+
         <ul>
           {this.renderPaints()}
         </ul>
+
+
         <Snackbar
           open={this.state.sb_open}
           message={this.state.sb_msg}
