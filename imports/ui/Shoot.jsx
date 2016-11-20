@@ -90,10 +90,10 @@ export default class Shoot extends Component {
           height: 1600,
           quality: 75
         }, function (err, data) {
-          me.setState({bLoading:true});
           if (err) {
             console.log('error', err);
-          }
+          }else
+            me.setState({bLoading:true});
           if(data)
             Meteor.call('pic.take', data,'/upload');
     });    
