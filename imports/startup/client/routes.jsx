@@ -5,6 +5,7 @@ import { Router, Route, browserHistory } from 'react-router';
 import AppContainer from '../../ui/App.jsx';
 import Shooter from '../../ui/Shoot.jsx';
 import Home from '../../ui/Home.jsx';
+import Share from '../../ui/Share.jsx';
 
 export const renderRoutes = () => (
   <Router history={browserHistory}>
@@ -12,7 +13,7 @@ export const renderRoutes = () => (
   <Route path="/admin" component={AppContainer}>
       <Route path=":path" component={AppContainer}/>
   </Route>
-   <Route path='shoot' component={Shooter} />
-
+  <Route path='shoot' component={Shooter} />
+  <Route path='share' component={Share} />
   </Router>
 );

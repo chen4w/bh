@@ -48,9 +48,11 @@ export default class Home extends Component {
                 <CameraIcon style={styles.largeIcon}  color={grey500} hoverColor={grey900} />
             </Paper>
             </Link>
+            <Link to='/share'>
             <Paper  zDepth={2} circle={true} >
                 <ShareIcon style={styles.largeIcon} color={grey500} hoverColor={grey900} />
             </Paper>
+            </Link>
         </div>      
     );
   }
