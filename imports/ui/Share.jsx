@@ -11,8 +11,16 @@ const masonryOptions = {
 export default class Share extends React.Component {
   constructor(props) {
     super(props);
+    console.log(this.props.params.fpath);
+    let fpath = this.props.params.fpath;
+    if(fpath){
+        fpath = settings.pic_archive+'/'+fpath+'/p';
+    }else{
+        //默认显示墙纸目录
+        fpath = settings.pic_wallpaper;
+    }
     let me = this;
-    this.state = {path:'upload',pics:[],bShowBtn:false};
+    this.state = {path:fpath,pics:[],bShowBtn:false};
     Meteor.call('folder.getpics', this.state.path, function(error, result){
         if(error){
             console.log(error);
@@ -50,7 +58,8 @@ render() {
     w -= 20;
     //屏幕宽度小于抽点图片尺寸,则强制图片与屏幕等宽
     let img_w = w < 450 ? w: 450;
-    let path_imgsrc = settings.url_root+ this.state.path.replace(/\\/g,'/')  +'/';
+    //share/2016-11-21/ 替换路径符号和-
+    let path_imgsrc = settings.url_root+ this.state.path.replace(/\\|\-/g,'/')  +'/';
     if(settings.thumbnails_size>0)
       path_imgsrc+= settings.thumbnails_uri+settings.thumbnails_size +'/';
     

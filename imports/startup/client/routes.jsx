@@ -14,6 +14,8 @@ export const renderRoutes = () => (
       <Route path=":path" component={AppContainer}/>
   </Route>
   <Route path='shoot' component={Shooter} />
-  <Route path='share' component={Share} />
+  <Route path='share' component={Share} >
+    <Route path="/share/:fpath" component={Share}/>
+  </Route>
   </Router>
 );

@@ -95,7 +95,8 @@ Meteor.startup(() => {
   //start dir watch
   watch();
   //cache pic_upload path
-  cachePath(settings.pic_root+ path.sep + settings.pic_upload);
+  cachePath(path.join(settings.pic_root, settings.pic_upload));
+  cachePath(path.join(settings.pic_root, settings.pic_wallpaper));
   //a simple static files server for easy deploy 
   WebApp.connectHandlers.use(settings.pic_url, (req, res) => {
     let fp =  settings.pic_root + req.url.replace(/\//g,path.sep);

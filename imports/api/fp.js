@@ -54,7 +54,10 @@ class CFolder {
     });
   }
   getPics(fpath,ipAddr){
-    let dir = settings.pic_root+g_path.sep+fpath;
+    //convert url --> file path
+    let dir = settings.pic_root+g_path.sep
+      +fpath.replace(/\-/g,g_path.sep);
+    console.log(dir);
     let rl = [];
     if (!g_fs.existsSync(dir)) {
       return rl;
