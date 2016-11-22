@@ -26,9 +26,12 @@ export default class Share extends React.Component {
   }
 handleClick(p1,p2){
     if(this.state.bShowBtn){
-        this.setState({bShowBtn:false});
+        this.setState({bShowBtn:false,imgsrc:''});
     }else if(p1.target.tagName=='IMG'){
-        this.setState({bShowBtn:true});
+        this.setState({
+            bShowBtn:true,
+            imgsrc:p1.target.src
+        });
     }
 }
 
@@ -36,11 +39,11 @@ render() {
     let btn_el = '';
     if(this.state.bShowBtn){
         btn_el = 
-    <ShareButtons 
+    <ShareButtons
+        title='我在杭州工艺美术博物馆的涂鸦' 
         sites = {["qzone", "weibo", "qq", "tencent", "wechat", "douban" ]}
-        url = "https://github.com/DawnyWu/react-share-buttons"
-        title = "react-share-buttons"
-        description = "一键分享到各大社交网站的react组件"
+        description = "即兴创作，一起来玩"
+        image={this.state.imgsrc}
     />    
     }
     let w=window.innerWidth|| document.documentElement.clientWidth|| document.body.clientWidth;
