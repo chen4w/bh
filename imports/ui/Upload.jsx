@@ -1,8 +1,23 @@
 import React, { Component } from 'react';
+
+var QRCode = require('qrcode.react');
 const settings = require('../../settings.js');
 /*---upload conponent-----*/
 var Dropzone = require('react-dropzone');
 
+const styles = {
+  drop_zone: {
+    float: 'left',
+    paddingRight: 50,
+    textAlign:'right'
+  },
+dash:{
+  border: '0 none',
+  borderTop: '2px dashed #322f32',
+  backGround: 'none',
+  height:0,
+  } 
+}
 export default class Upload extends Component {
  constructor(props) {
     super(props); 
@@ -60,9 +75,18 @@ export default class Upload extends Component {
       
         return (
             <div>
-                <Dropzone ref={(node) => { this.dropzone = node; }} onDrop={this.onDrop.bind(this)}>
-                    <div>将上传的图片拽到此处，<br/>或者点击此处选择图片</div>
+              <div style={styles.drop_zone}>
+                <Dropzone  ref={(node) => { this.dropzone = node; }} onDrop={this.onDrop.bind(this)}>
+                    <div>
+                    <br/>将上传的图片拽到此处<br/>或者点击此处选择图片
+                    <br/><br/><br/><br/><hr style={styles.dash}/>
+                    扫描二维码<br/>上传您的作品
+                    </div>
                 </Dropzone>
+              </div>
+                <QRCode value={settings.url_upload} 
+                  size ={200}
+                />
                 {this.state.files.length > 0 ? <div>
                 <h2>{this.state.output}</h2>
                 <div>{this.state.files.map((file,index) => <img width={img_w} key={index} src={file.preview} /> )}</div>

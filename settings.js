@@ -2,6 +2,7 @@ var path = require("path");
 
 class Setting {
   constructor() {
+    this.url_upload = "http://facebook.github.io/react/";
     this.share_limit = 5;//社交分享无限滚动每次加载张数
     this.show_limit = 10; //移动终端最多显示的待检查图片数量
 
