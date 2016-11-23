@@ -126,7 +126,7 @@ Meteor.startup(() => {
 //handle post file req
 WebApp.connectHandlers.use('/'+settings.pic_upload, (req, res) => {
   let ct = req.headers['content-type'].toLowerCase();
-  let ftype = (ct.index('/png')==-1)?'.jpg':'.png';
+  let ftype = (ct.indexOf('/png')==-1)?'.jpg':'.png';
    let fn = path.join(
      settings.pic_root,
      settings.pic_upload,
