@@ -7,7 +7,6 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import Checkbox from 'material-ui/Checkbox';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import Drawer from 'material-ui/Drawer';
 import IconButton from 'material-ui/IconButton';
 import CameraIcon from 'material-ui/svg-icons/image/photo-camera';
 
@@ -53,6 +52,8 @@ const styles = {
   btn_ico:{marginTop: 8, marginRight:22},
   auto_complete:{marginTop: 5,marginLeft: 20,width:150}
 }; 
+
+
 // App component - represents the whole app
 export default class Shoot extends Component {
   constructor(props) {
@@ -319,6 +320,7 @@ export default class Shoot extends Component {
   </div> :''
 }
 
+<DropzoneDemo />
         <ul>
           {this.renderPaints()}
         </ul>
@@ -330,6 +332,8 @@ export default class Shoot extends Component {
           autoHideDuration={4000}
           onRequestClose={this.handleSBClose.bind(this)}
         />
+        
+
       </div>
     );
   }

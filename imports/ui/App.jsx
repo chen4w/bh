@@ -7,7 +7,6 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import Checkbox from 'material-ui/Checkbox';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import Drawer from 'material-ui/Drawer';
 import IconButton from 'material-ui/IconButton';
 import CameraIcon from 'material-ui/svg-icons/image/photo-camera';
 

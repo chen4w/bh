@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import '../imports/api/folder.js';
 
 import {watch} from  './guard.js';
+const uuid = require('node-uuid');
 
 //for windows and mac path
 const path = require('path');
@@ -63,7 +64,7 @@ export function cacheFile(fpath,func) {
           if(func){
             func(null);
           }
-          return next(err);
+          return;
         } 
         //cache thumbnail
         fsCache.set(fpath,buf);
@@ -98,6 +99,7 @@ Meteor.startup(() => {
   cachePath(path.join(settings.pic_root, settings.pic_upload));
   cachePath(path.join(settings.pic_root, settings.pic_wallpaper));
   //a simple static files server for easy deploy 
+  //handle get pic req
   WebApp.connectHandlers.use(settings.pic_url, (req, res) => {
     let fp =  settings.pic_root + req.url.replace(/\//g,path.sep);
     let fpath = decodeURIComponent(fp);
@@ -119,5 +121,25 @@ Meteor.startup(() => {
         res.end();
       }
     });
+  });
+
+//handle post file req
+WebApp.connectHandlers.use('/'+settings.pic_upload, (req, res) => {
+   let fn = path.join(
+     settings.pic_root,
+     settings.pic_upload,
+     uuid.v1()+'.jpg');
+     console.log('upload file:'+ fn +'  method:'+req.method);
+    let file = fs.createWriteStream(fn); 
+    file.on('error',function(error){
+      console.log(error);
+      return;
+    });
+    file.on('finish',function(){
+        res.writeHead(200) 
+        res.end(); //end the respone 
+        //console.log('Finish uploading, time taken: ' + Date.now() - start);
+    });
+    req.pipe(file); //pipe the request to the file  
   });
 });
