@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { browserHistory } from 'react-router';
  
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import IconMenu from 'material-ui/IconMenu';
@@ -8,7 +9,10 @@ import Checkbox from 'material-ui/Checkbox';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
-import CameraIcon from 'material-ui/svg-icons/image/photo-camera';
+
+import CheckIcon from 'material-ui/svg-icons/navigation/check';
+import CloseIcon from 'material-ui/svg-icons/navigation/close';
+import PowerIcon from 'material-ui/svg-icons/action/power-settings-new';
 
 import AutoComplete from 'material-ui/AutoComplete';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -41,8 +45,8 @@ const styles = {
     width: '100%'
   },
   checkbox: {
-    marginTop: 18,
-    marginBottom: 12,
+    marginTop: 12,
+    marginBottom: 17,
     marginLeft: 12,
     width: 100
    },
@@ -75,6 +79,7 @@ export default class App extends Component {
       sb_open:true,
       sb_msg:'正在请求图片...',
       bLoading:false,
+      isAuthenticated: Meteor.userId() !== null
     };
     var me=this;
     Meteor.call('folder.listfolder', function(error, result){
@@ -90,22 +95,25 @@ export default class App extends Component {
   handleSBClose(){
     this.setState({sb_open:false,sb_msg:''});
   }
+//登录验证
+  componentWillMount(){
+    if (!this.state.isAuthenticated) {
+      browserHistory.push('/login');
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if (!this.state.isAuthenticated) {
+      browserHistory.push('/login');
+    }
+  }
+
   componentDidMount() {
     ginf.app = this;
     document.title='合规检查';
   }
-  takePic(){
-        MeteorCamera.getPicture({  
-          width: 1200,
-          height: 1200,
-          quality: 75
-        }, function (err, data) {
-          if (err) {
-            console.log('error', err);
-          }
-          if(data)
-            Meteor.call('pic.take', data,'/upload');
-    });    
+  logout(){
+    Meteor.logout(e =>  browserHistory.push('/login'));   
   }
   getPicLen(){
     if(!bMobile || !settings.show_limit)
@@ -303,20 +311,26 @@ export default class App extends Component {
             labelStyle={styles.label_check}
           />
   
-    <RaisedButton label="通过" primary={true} style={styles.button} disabled={!bSelOne}
-    onTouchTap={this.handlePass.bind(this,true)} />
-    <RaisedButton label="删除" secondary={true} style={styles.button} disabled={!bSelOne}
-      onTouchTap={this.handleDeleteOpen.bind(this)}/>    
+    <IconButton tooltip="通过"
+      disabled={!bSelOne}
+      onTouchTap={e => this.handlePass(true)} >
+      <CheckIcon />
+    </IconButton>
 
-        </ToolbarGroup>
+    <IconButton tooltip="删除"
+      disabled={!bSelOne}
+      onTouchTap={e => this.handleDeleteOpen()} >
+      <CloseIcon />
+    </IconButton>
+
+      </ToolbarGroup>
 
         <ToolbarGroup >
        <ToolbarSeparator />
 
-    <IconButton tooltip="Take Picture"
-      onTouchTap={this.takePic.bind(this)}
-    >
-      <CameraIcon />
+    <IconButton tooltip="退出登录"
+      onTouchTap={e => this.logout()} >
+      <PowerIcon />
     </IconButton>
 
     <AutoComplete

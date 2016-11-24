@@ -9,8 +9,8 @@ class Setting {
     this.pic_url = '/img/'; //图片url起始路径
     this.port_sock = 8200;  //webSocket端口
     this.port_web = 3000; //web端口
-    this.host = '172.16.2.72';  //服务的ip地址,用于移动App请求
-    //this.host = '192.168.1.77';
+    //this.host = '172.16.2.72';  //服务的ip地址,用于移动App请求
+    this.host = '192.168.1.77';
     this.stabilityThreshold = 2000; //监测文件延时,直到此时间(ms)内文件不再增长才触发added消息
 
     this.thumbnails_size=450; //默认的抽点尺寸
