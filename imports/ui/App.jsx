@@ -58,7 +58,7 @@ const styles = {
   },
   button:{margin: 12,},
   btn_ico:{marginTop: 8, marginRight:22},
-  auto_complete:{marginTop: 5,marginLeft: 20,width:180}
+  auto_complete:{marginTop: 0,marginLeft: 20,width:180}
 }; 
 // App component - represents the whole app
 export default class App extends Component {
