@@ -29,7 +29,7 @@ class CFolder {
       let p0 = fsrc.lastIndexOf(g_path.sep,p1-1);
 
       let pn = fsrc.substring(p0+1,p1);
-      console.log(pn);
+      //console.log(pn);
       let ftarget=null;
       let fsub = bPass? 'p':'n';
       //已经通过或删除的文件需要特殊处理
@@ -91,12 +91,13 @@ class CFolder {
   }
   listFolder(fpath){
       let rl = [];
-      this.walk(g_path.join(settings.pic_root,fpath), rl);
+      let fproot = g_path.join(settings.pic_root,fpath);
+      this.walk(fproot, rl, fproot);
       return rl;
   }
-  walk(fpath, rl){
+  walk(fpath, rl, fproot){
     //walk by absolute path, but return relative path
-    let pn = fpath.substring(settings.pic_root.length+1);
+    let pn = fpath.substring(fproot.length+1);
     //exclude the root path
     //忽略抽点目录
     if(pn!="" && pn.indexOf(settings.thumbnails_uri)==-1)
@@ -104,7 +105,7 @@ class CFolder {
     let me = this;
     let l = me.getChildren(fpath);
     l.forEach(function (item, index, array) {
-        me.walk(fpath+g_path.sep+item, rl);
+        me.walk(fpath+g_path.sep+item, rl,fproot);
     });
   }
   //sync call

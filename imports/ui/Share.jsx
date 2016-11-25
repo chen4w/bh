@@ -34,7 +34,7 @@ export default class Share extends React.Component {
         hasMore:false,
         items:[],
     };
-    Meteor.call('folder.listfolder', function(error, result){
+    Meteor.call('folder.listfolder', settings.pic_archive, function(error, result){
         if(error){
             console.log(error);
         } else {
@@ -125,6 +125,7 @@ render() {
           hintText="输入目录路径"
           dataSource={this.state.folders}
           searchText={this.state.path}
+          openOnFocus={true}
           maxSearchResults={5}
           fullWidth={true}
         />

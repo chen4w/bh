@@ -14,7 +14,9 @@ import CheckIcon from 'material-ui/svg-icons/navigation/check';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import PowerIcon from 'material-ui/svg-icons/action/power-settings-new';
 
-import AutoComplete from 'material-ui/AutoComplete';
+//import AutoComplete from 'material-ui/AutoComplete';
+import SelectField from 'material-ui/SelectField';
+
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 
@@ -39,7 +41,9 @@ const styles = {
     left: '50%',
     top:'50%',
   },
-
+  customWidth: {
+    width: 100,
+  },
   toolbar:{
     position: 'fixed',
     top: 0,
@@ -69,13 +73,15 @@ export default class App extends Component {
     //console.log(this.props);
     let path_default = props.params.path?props.params.path:'upload';
     this.state = {
+      path_root:path_default,
       path:path_default,
+      path_sel:'',
       pics: [],
       bSelAll:false,
       dt_default:new Date(),
       openDelete:false,
+      openLogout:false,
       sels:[],
-      openFolder:false,
       folders:[],
       sb_open:true,
       sb_msg:'正在请求图片...',
@@ -86,15 +92,7 @@ export default class App extends Component {
     this.initSock();    
 
     var me=this;
-    Meteor.call('folder.listfolder',path_default, function(error, result){
-        if(error){
-            console.log(error);
-        } else {
-          //console.log(result);
-            me.setState({folders:result});
-        }
-    });
-    this.onDirChange(this.state.path);
+    this.onDirChange(this.state.path_sel);
   }
 
   initSock(){
@@ -201,24 +199,27 @@ export default class App extends Component {
   getChildContext() {
      return { muiTheme: getMuiTheme(baseTheme) };
   }
-  onDirChange(p1,p2){
+  onDirChange(p1){
     let me = this;
-    Meteor.call('folder.getpics', p1, function(error, result){
+    let path = p1==''?this.state.path_root:this.state.path_root+settings.path_sep+ p1;
+    Meteor.call('folder.getpics',path , function(error, result){
         if(error){
             console.log(error);
         } else {
             //console.log('----正在请求图片：'+result);
-            me.setState({path:p1,pics:result,sb_open:true,
+            me.setState({
+              path:path,
+              path_sel:p1,pics:result,sb_open:true,
               sb_msg:'当前目录共'+result.length+'张图'});
             //console.log('--请求结束--'+result);
         }
     });
   }
-  handleFolder(){
-    this.setState({openFolder:!this.state.openFolder});
-  }
   handleDeleteOpen(){
     this.setState({openDelete: true});
+  }
+  handleLogoutOpen(){
+    this.setState({openLogout: true});
   }
 
   handlePass(p1, p2){
@@ -281,6 +282,9 @@ export default class App extends Component {
   handleCloseDelete(){
     this.setState({openDelete: false});
   }
+  handleCloseLogout(){
+    this.setState({openLogout: false});
+  }
 
   renderPaints() {
     //相对路径会导致ios设备无法获取到图片
@@ -314,6 +318,19 @@ export default class App extends Component {
       />,
     ];
 
+     const actions_logout = [
+      <FlatButton
+        label="取消"
+        primary={true}
+        onTouchTap={this.handleCloseLogout.bind(this)}
+      />,
+      <FlatButton
+        label="退出"
+        primary={true}
+        onTouchTap={e => this.logout()}
+      />,
+    ];
+
     return (
       <div id="container" className="container">
         <Dialog
@@ -324,6 +341,16 @@ export default class App extends Component {
           >
             确定删除选中的{this.state.sels.length}项？
           </Dialog>
+
+        <Dialog
+          actions={actions_logout}
+          modal={false}
+          open={this.state.openLogout}
+          onRequestClose={this.handleCloseLogout.bind(this)}
+        >
+          确定要退出登录吗?
+        </Dialog>
+          
 
     <Toolbar style={styles.toolbar}>
         <ToolbarGroup firstChild={true}>
@@ -353,21 +380,19 @@ export default class App extends Component {
        <ToolbarSeparator />
 
     <IconButton tooltip="退出登录"
-      onTouchTap={e => this.logout()} >
+      onTouchTap={e => this.handleLogoutOpen()} >
       <PowerIcon />
     </IconButton>
 
-    <AutoComplete
-      hintText="输入目录路径"
-      filter={AutoComplete.fuzzyFilter}
-      dataSource={this.state.folders}
-      maxSearchResults={5}
-      openOnFocus={true}
-      onNewRequest={this.onDirChange.bind(this)}
-      searchText={this.state.path}
-      style={styles.auto_complete}
-    />
- 
+      <SelectField 
+      value={this.state.path_sel}
+      style={styles.customWidth}
+      onChange={(e,p1,p2) => this.onDirChange(p2)}>
+        <MenuItem value={''} primaryText="待检查" />
+        <MenuItem value={'p'} primaryText="已通过" />
+        <MenuItem value={'n'} primaryText="已删除" />
+      </SelectField>
+
          </ToolbarGroup>
 </Toolbar>
 

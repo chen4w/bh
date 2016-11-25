@@ -1,5 +1,5 @@
 var path = require("path");
-var crypto = require('crypto');
+//var crypto = require('crypto');
 
 class Setting {
   constructor() {
@@ -39,8 +39,8 @@ class Setting {
     //常用间接设置量,
     this.url_root = 'http://'+this.host+ ':'+this.port_web
       +this.pic_url;
-    this.sn_md5 = crypto.createHash('md5').update(this.sn).digest("hex");
-    console.log('sn:'+this.sn+' md5:'+this.sn_md5);
+    //this.sn_md5 = crypto.createHash('md5').update(this.sn).digest("hex");
+    //console.log('sn:'+this.sn+' md5:'+this.sn_md5);
       
   }
 }
