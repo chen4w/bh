@@ -26,8 +26,18 @@ const styles = {
   },
 };
 
+const info ={
+  'User not found':'不存在该用户',
+  'Incorrect password':'密码错误',
+  'Username already exists.':'该用户已经存在.',
+  'Token expired':'链接失效'
+}
+
 const ERR_NULL_PWD = '密码不允许为空';
 
+function _info(msg){
+  return info[msg] || msg;
+}
 
 // Paint component - represents a single todo item
 export default class Account extends Component {
@@ -63,7 +73,7 @@ export default class Account extends Component {
     Accounts.resetPassword(this.state.token, this.state.val_pwd3, (err) => {
       if (err) {
         this.setState({
-          err_reset: err.reason,
+          err_reset: _info(err.reason),
           bLoading:false
         });
       } else {
@@ -100,7 +110,7 @@ export default class Account extends Component {
     Accounts.createUser({email: email, username: name, password: password}, (err) => {
       if(err){
         this.setState({
-          err_join: err.reason,
+          err_join: _info(err.reason),
           bLoading:false
         });
       } else {
@@ -118,7 +128,7 @@ export default class Account extends Component {
     Meteor.loginWithPassword(email, password, (err) => {
       if(err){
         this.setState({
-          err_login: err.reason,
+          err_login: _info(err.reason),
           bLoading:false
         });
       } else {
