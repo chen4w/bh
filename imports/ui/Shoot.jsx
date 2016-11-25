@@ -81,7 +81,7 @@ export default class Shoot extends Component {
     this.setState({sb_open:false,sb_msg:''});
   }
   componentDidMount() {
-    ginf.app = this;
+    //ginf.app = this;
     document.title='拍照上传';
   }
   takePic(){

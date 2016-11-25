@@ -13,7 +13,7 @@ const masonryOptions = {
 export default class Share extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props.params.fpath);
+    //console.log(this.props.params.fpath);
     let fpath = this.props.params.fpath;
     if(fpath){
         fpath = settings.pic_archive+'/'+fpath+'/p';
@@ -54,7 +54,7 @@ handleClick(p1,p2){
     }
 }
 loadMore(page) {
-    console.log('load');
+    //console.log('load');
     let w=window.innerWidth|| document.documentElement.clientWidth|| document.body.clientWidth;
     w -= 20;
     //屏幕宽度小于抽点图片尺寸,则强制图片与屏幕等宽

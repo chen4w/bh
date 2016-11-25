@@ -11,25 +11,6 @@ if (!Response.prototype.setEncoding) {
 }
 const settings = require('../settings.js');
 
-ginf={};
-let socket = require('socket.io-client')('http://'+settings.host+':'+settings.port_sock);
-ginf.sock = socket;
-socket.on('connect', function() {
-  console.log('Client connected');
-});
-socket.on('disconnect', function() {
-  console.log('Client disconnected');
-});
-socket.on('added', function(data) {
-  console.log('added:'+data);
-  if(ginf.app)
-    ginf.app.onItemAdded(data);
-});
-socket.on('deleted', function(data) {
-  console.log('deleted:'+data);
-  if(ginf.app)
-    ginf.app.onItemDeleted(data);
-});
 
 Meteor.startup(() => {
   var injectTapEventPlugin = require("react-tap-event-plugin");

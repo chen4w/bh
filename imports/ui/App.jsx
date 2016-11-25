@@ -26,8 +26,9 @@ import Folder from './Folder.jsx';
 
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
- 
+
 const settings = require('../../settings.js');
+
 const  MobileDetect = require('mobile-detect'),
     mdd = new MobileDetect(navigator.userAgent),
     bMobile = mdd.mobile();
@@ -81,6 +82,9 @@ export default class App extends Component {
       bLoading:false,
       isAuthenticated: Meteor.userId() !== null
     };
+
+    this.initSock();    
+
     var me=this;
     Meteor.call('folder.listfolder', function(error, result){
         if(error){
@@ -91,6 +95,27 @@ export default class App extends Component {
         }
     });
     this.onDirChange(this.state.path);
+  }
+
+  initSock(){
+    /*--------websocket----------*/
+    let socket = require('socket.io-client')('http://'+settings.host+':'+settings.port_sock);
+    let me = this;
+    socket.on('connect', function() {
+      console.log('Client connected');
+    });
+    socket.on('disconnect', function() {
+      console.log('Client disconnected');
+    });
+    socket.on('added', function(data) {
+      console.log('added:'+data);
+      me.onItemAdded(data);
+    });
+    socket.on('deleted', function(data) {
+      console.log('deleted:'+data);
+      me.onItemDeleted(data);
+    });
+    /*---------websocket end--------*/
   }
   handleSBClose(){
     this.setState({sb_open:false,sb_msg:''});
@@ -109,7 +134,6 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    ginf.app = this;
     document.title='合规检查';
   }
   logout(){
@@ -210,9 +234,7 @@ export default class App extends Component {
     Meteor.call('pic.pass',pics,p1, function(error, result){
         if(error){
             console.log(error);
-        } else {
-            console.log(result);
-         }
+        }
     });    
   };
   

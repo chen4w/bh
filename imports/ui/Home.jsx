@@ -30,7 +30,6 @@ export default class Home extends Component {
      return { muiTheme: getMuiTheme(baseTheme) };
   }
   componentDidMount() {
-    ginf.app = null;
     document.title='功能导览';
   }
   
