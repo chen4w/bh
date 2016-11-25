@@ -77,9 +77,9 @@ class CFolder {
   list(fpath) {
     return this.getChildren(settings.pic_root);
   }
-  listFolder(){
+  listFolder(fpath){
       let rl = [];
-      this.walk(settings.pic_root, rl);
+      this.walk(g_path.join(settings.pic_root,fpath), rl);
       return rl;
   }
   walk(fpath, rl){

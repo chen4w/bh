@@ -1,7 +1,11 @@
 
 import React, { Component, PropTypes } from 'react';
+import AutoComplete from 'material-ui/AutoComplete';
 import ShareButtons from './ShareButtons.jsx';
 import InfiniteScroll from 'react-infinite-scroller';
+
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 const Masonry = require('react-masonry-component');
 
@@ -24,11 +28,21 @@ export default class Share extends React.Component {
     let me = this;
     this.state = {
         path:fpath,
+        folders:[],
         pics:[],
         bShowBtn:false,
         hasMore:false,
         items:[],
     };
+    Meteor.call('folder.listfolder', function(error, result){
+        if(error){
+            console.log(error);
+        } else {
+          //console.log(result);
+            me.setState({folders:result});
+        }
+    });
+
     Meteor.call('folder.getpics', this.state.path, function(error, result){
         if(error){
             console.log(error);
@@ -43,6 +57,10 @@ export default class Share extends React.Component {
         }
     });
   }
+getChildContext() {
+    return { muiTheme: getMuiTheme(baseTheme) };
+}
+  
 handleClick(p1,p2){
     if(this.state.bShowBtn){
         this.setState({bShowBtn:false,imgsrc:''});
@@ -102,6 +120,15 @@ render() {
 
     return (
     <div>
+        <AutoComplete
+          style={{paddingLeft:10}}
+          hintText="输入目录路径"
+          dataSource={this.state.folders}
+          searchText={this.state.path}
+          maxSearchResults={5}
+          fullWidth={true}
+        />
+
     <InfiniteScroll
     pageStart={0}
     loadMore={this.loadMore.bind(this)}
@@ -125,3 +152,7 @@ render() {
     );
   }
 }
+
+Share.childContextTypes = {
+   muiTheme: React.PropTypes.object.isRequired,
+};

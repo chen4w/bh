@@ -86,7 +86,7 @@ export default class App extends Component {
     this.initSock();    
 
     var me=this;
-    Meteor.call('folder.listfolder', function(error, result){
+    Meteor.call('folder.listfolder',path_default, function(error, result){
         if(error){
             console.log(error);
         } else {
@@ -362,6 +362,7 @@ export default class App extends Component {
       filter={AutoComplete.fuzzyFilter}
       dataSource={this.state.folders}
       maxSearchResults={5}
+      openOnFocus={true}
       onNewRequest={this.onDirChange.bind(this)}
       searchText={this.state.path}
       style={styles.auto_complete}

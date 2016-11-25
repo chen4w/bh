@@ -1,7 +1,13 @@
 var path = require("path");
+var crypto = require('crypto');
 
 class Setting {
   constructor() {
+    this.version='2016.12';
+    //必须是唯一的名称,将其hash值作为云端唯一标识
+    this.sn = '杭州工艺美术博物馆';
+    this.sn_md5 = '81949faebfe3c5ff42bcbd5c06a06511';
+    
     //smtp服务账号,用于发送密码重置或验证
     this.mail_url = 'smtp://sinosoftechtest:sinosoft123456@smtp.sina.com'; 
     this.mail_from = 'sinosoftechtest@sina.com'; 
@@ -32,6 +38,9 @@ class Setting {
     //常用间接设置量,
     this.url_root = 'http://'+this.host+ ':'+this.port_web
       +this.pic_url;
+    this.sn_md5 = crypto.createHash('md5').update(this.sn).digest("hex");
+    console.log('sn:'+this.sn+' md5:'+this.sn_md5);
+      
   }
 }
 module.exports =  (new Setting);
