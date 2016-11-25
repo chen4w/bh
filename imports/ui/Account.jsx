@@ -7,16 +7,25 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import { Accounts } from 'meteor/accounts-base'
 import Subheader from 'material-ui/Subheader';
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {red500} from 'material-ui/styles/colors';
 
  
-const customContentStyle = {
-  width: '100%',
-  maxWidth: 500,
+const styles = {
+  customContentStyle: {
+    position: 'relative',
+  },
+  refresh: {
+    display: 'inline-block',
+    position: 'relative',
+    float: 'left',
+    marginRight: 40,
+  },
 };
+
 const ERR_NULL_PWD = '密码不允许为空';
 
 
@@ -27,6 +36,7 @@ export default class Account extends Component {
     let token = props.params.token;
     let open = token?2:0;
     this.state = {
+      bLoading:false,
       open: open,
       err_join:'',
       err_login:'',
@@ -61,42 +71,50 @@ export default class Account extends Component {
   }
 
   handleFogotPwd(e){
+    this.setState({bLoading:true});
     Accounts.forgotPassword({email: this.state.val_email0}, (err) => {
       if (err) {
         this.setState({
-          err_login: err.reason
+          err_login: err.reason,
+          bLoading:false
         });
       } else {
          this.setState({
-          err_login: '重置密码的链接已经发送到您的邮箱'
+          err_login: '重置密码的链接已经发送到您的邮箱',
+          bLoading:false
         });
       }
     });
   }
   handleJoin(e){
     e.preventDefault();
+    this.setState({bLoading:true});
     let email = this.state.val_email1;
     let name = email;
     let password = this.state.val_pwd1;
     Accounts.createUser({email: email, username: name, password: password}, (err) => {
       if(err){
         this.setState({
-          err_join: err.reason
+          err_join: err.reason,
+          bLoading:false
         });
       } else {
         //browserHistory.push('/login');
-        this.setState({open:0,val_email0:email,err_email0:''});
+        this.setState({open:0,val_email0:email,err_email0:'',
+          bLoading:false});
       }
     });
   }
   handleLogin(e){
     e.preventDefault();
+    this.setState({bLoading:true});
     let email = this.state.val_email0;
     let password = this.state.val_pwd0;
     Meteor.loginWithPassword(email, password, (err) => {
       if(err){
         this.setState({
-          err_login: err.reason
+          err_login: err.reason,
+          bLoading:false
         });
       } else {
         browserHistory.push('/');
@@ -170,13 +188,22 @@ export default class Account extends Component {
     return (
     <div>
       <Dialog
-          contentStyle={customContentStyle}
+          contentStyle={styles.customContentStyle}
           title="登录"
           actions={actions_signin}
           modal={false}
           open={this.state.open==0}
           onRequestClose={this.handleClose.bind(this)}
         >
+{ this.state.bLoading && this.state.open==0?        
+    <RefreshIndicator
+      size={40}
+      left={10}
+      top={0}
+      status="loading"
+      style={styles.refresh}
+    />:''
+}
         <Subheader style={{color: red500}}>{this.state.err_login}</Subheader>
         <TextField
           fullWidth={true}
@@ -217,13 +244,22 @@ export default class Account extends Component {
 
 
       <Dialog
-          contentStyle={customContentStyle}
+          contentStyle={styles.customContentStyle}
           title="注册"
           actions={actions_join}
           modal={false}
           open={this.state.open==1}
           onRequestClose={this.handleClose.bind(this)}
         >
+{ this.state.bLoading && this.state.open==1?        
+    <RefreshIndicator
+      size={40}
+      left={10}
+      top={0}
+      status="loading"
+      style={styles.refresh}
+    />:''
+}
          <Subheader style={{color: red500}}>{this.state.err_join}</Subheader>
         <TextField
           fullWidth={true}
@@ -283,13 +319,22 @@ export default class Account extends Component {
  
 
       <Dialog
-          contentStyle={customContentStyle}
+          contentStyle={styles.customContentStyle}
           title="修改密码"
           actions={actions_reset}
           modal={false}
           open={this.state.open==2}
           onRequestClose={this.handleClose.bind(this)}
         >
+{ this.state.bLoading && this.state.open==2?        
+    <RefreshIndicator
+      size={40}
+      left={10}
+      top={0}
+      status="loading"
+      style={styles.refresh}
+    />:''
+}
          <Subheader style={{color: red500}}>{this.state.err_reset}</Subheader>
 
         <TextField
