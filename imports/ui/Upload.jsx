@@ -84,7 +84,7 @@ export default class Upload extends Component {
                     </div>
                 </Dropzone>
               </div>
-                <QRCode value={settings.url_upload} 
+                <QRCode value={settings.url_upload || location.href} 
                   size ={200}
                 />
                 {this.state.files.length > 0 ? <div>

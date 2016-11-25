@@ -160,6 +160,7 @@ render() {
             disableImagesLoaded={false} // default false
             updateOnEachImageLoad={false} // default false and works only if disableImagesLoaded is false
         >
+        <br/><br/>
             {this.state.items}
         </Masonry>
     </InfiniteScroll>

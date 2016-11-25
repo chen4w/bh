@@ -11,7 +11,8 @@ class Setting {
     //smtp服务账号,用于发送密码重置或验证
     this.mail_url = 'smtp://sinosoftechtest:sinosoft123456@smtp.sina.com'; 
     this.mail_from = 'sinosoftechtest@sina.com'; 
-    this.url_upload = "http://facebook.github.io/react/";
+    //二维码对应的拍照上传url,如果不设置直接取当前网页location
+    this.url_upload = "http://www.zgdjss.com/unity/vr360/hzmg/tour.html";
     this.share_limit = 5;//社交分享无限滚动每次加载张数
     this.show_limit = 10; //移动终端最多显示的待检查图片数量
 
