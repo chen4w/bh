@@ -29,6 +29,7 @@ class Setting {
     this.pic_upload = 'upload';   //上传目录
     this.pic_archive = 'archive';   //归档目录
     this.pic_wallpaper = 'wallpaper'; //墙纸目录
+    this.path_sep = path.sep;
 
     //图片文件根目录
     if(path.sep=='/')

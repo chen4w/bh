@@ -24,16 +24,28 @@ class CFolder {
 
   pass(pics, bPass){
     pics.forEach(function(item){
-      let fsrc = settings.pic_root+g_path.sep+item;
-      let pos = fsrc.lastIndexOf(g_path.sep);
-      let fpath = fsrc.substring(0,pos);
+      let fsrc = g_path.join(settings.pic_root,item);
+      let p1 = fsrc.lastIndexOf(g_path.sep);
+      let p0 = fsrc.lastIndexOf(g_path.sep,p1-1);
+
+      let pn = fsrc.substring(p0+1,p1);
+      console.log(pn);
       let ftarget=null;
       let fsub = bPass? 'p':'n';
       //已经通过或删除的文件需要特殊处理
-      if(fpath.endsWith('/p') || fpath.endsWith('/n')){
-          ftarget = fsrc.substring(0,pos-1)+fsub+fsrc.substring(pos);
+      if(pn=='p' || pn =='n'){
+         //彻底删除
+         if(pn=='n' && !bPass){
+           g_fs.unlink(fsrc);
+           return;
+         }
+        //目标路径与源路径相同
+        ftarget = fsrc.substring(0,p1-1)+fsub+fsrc.substring(p1);
+        if(fsrc == ftarget){
+          return;
+        }
       }else{
-          ftarget = fsrc.substring(0,pos+1)+fsub+fsrc.substring(pos);
+        ftarget = fsrc.substring(0,p1+1)+fsub+fsrc.substring(p1);
       }
       mv(fsrc, ftarget,{mkdirp: true}, function(err) {
           // handle the error

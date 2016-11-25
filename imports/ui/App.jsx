@@ -156,7 +156,7 @@ export default class App extends Component {
       //忽略抽点推送的抽点文件,忽略待处理目录下的/p /n 目录
       let fn = dk.substring(plen+1);
       if(dk.indexOf(this.state.path)!=0 
-        ||fn.indexOf('/')!=-1 || fn.indexOf('\\')!=-1 ||
+        ||fn.indexOf(settings.path_sep)!=-1 ||
         (!ldk.endsWith('.jpg')&& !ldk.endsWith('.png')&& !ldk.endsWith('.jpeg')))
         continue;
       pics.push({fn:fn});
@@ -173,7 +173,7 @@ export default class App extends Component {
       let dk = data[k];
       let fn = dk.substring(plen+1);
       if(dk.indexOf(this.state.path)!=0 
-        ||fn.indexOf('/')!=-1 || fn.indexOf('\\')!=-1)
+        ||fn.indexOf(settings.path_sep)!=-1 )
         continue;
       //remove paper
       for(var i=0; i<pics.length; i++){
@@ -226,7 +226,7 @@ export default class App extends Component {
     console.log(p1);
     let me = this;
     let pics = [];
-    let path = this.state.path+'/';
+    let path = this.state.path+settings.path_sep;
     this.state.sels.forEach(function (item, index, array) {
       pics.push(path+item.fn);
     });
@@ -336,7 +336,7 @@ export default class App extends Component {
           />
   
     <IconButton tooltip="通过"
-      disabled={!bSelOne}
+      disabled={!bSelOne || this.state.path.endsWith(settings.path_sep+'p')}
       onTouchTap={e => this.handlePass(true)} >
       <CheckIcon />
     </IconButton>

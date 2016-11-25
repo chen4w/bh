@@ -20,7 +20,7 @@ export default class Share extends React.Component {
     //console.log(this.props.params.fpath);
     let fpath = this.props.params.fpath;
     if(fpath){
-        fpath = settings.pic_archive+'/'+fpath+'/p';
+        fpath = settings.pic_archive+settings.path_sep+fpath;
     }else{
         //默认显示墙纸目录
         fpath = settings.pic_wallpaper;
