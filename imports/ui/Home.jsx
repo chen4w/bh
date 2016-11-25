@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Router, Route, Link, browserHistory } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import Paper from 'material-ui/Paper';
 import CameraIcon from 'material-ui/svg-icons/image/photo-camera';
 import CheckIcon from 'material-ui/svg-icons/navigation/check';

@@ -13,7 +13,7 @@ export const renderRoutes = () => (
   <Router history={browserHistory}>
   <Route path="/" component={Home} />
   <Route path='login' component={Account} />
-
+  <Route path='/reset-password/:token' component={Account} />
   <Route path="/admin" component={AppContainer}>
       <Route path=":path" component={AppContainer}/>
   </Route>

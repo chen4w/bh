@@ -217,6 +217,7 @@ export default class App extends Component {
   };
   
   toggleSelAll(evt, checked) {
+     //evt.preventDefault();
     let pics = this.state.pics;
     let len = this.getPicLen();
     let sels=[];
@@ -231,6 +232,7 @@ export default class App extends Component {
       sels:(checked?sels:[])});
   }
   toggleSel(pos,evt) {
+     evt.preventDefault();
     let pics = this.state.pics;
     let pic = pics[pos];
     let sels=[];

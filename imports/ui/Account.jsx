@@ -18,23 +18,60 @@ const customContentStyle = {
   maxWidth: 500,
 };
 const ERR_NULL_PWD = '密码不允许为空';
+
+
 // Paint component - represents a single todo item
 export default class Account extends Component {
   constructor(props) {
     super(props);
- 
+    let token = props.params.token;
+    let open = token?2:0;
     this.state = {
-      open: 0,
+      open: open,
       err_join:'',
       err_login:'',
       val_email0:'',
       val_email1:'',
       val_pwd0:'',
-      err_pwd0:ERR_NULL_PWD,
       val_pwd1:'',
+      val_pwd2:'',
+      val_pwd3:'',
+      val_pwd4:'',
+      err_email0:'用户邮箱必填',
+      err_pwd0:ERR_NULL_PWD,
       err_pwd1:ERR_NULL_PWD,
       err_pwd2:ERR_NULL_PWD,
+      err_pwd3:ERR_NULL_PWD,
+      err_pwd4:ERR_NULL_PWD,
+      token:token,
     };
+  }
+  handleReset(e){
+    Accounts.resetPassword(this.state.token, this.state.val_pwd3, (err) => {
+      if (err) {
+        this.setState({
+          err_reset: err.reason
+        });
+      } else {
+         this.setState({
+          err_reset: '密码修改成功'
+        });
+      }
+    });
+  }
+
+  handleFogotPwd(e){
+    Accounts.forgotPassword({email: this.state.val_email0}, (err) => {
+      if (err) {
+        this.setState({
+          err_login: err.reason
+        });
+      } else {
+         this.setState({
+          err_login: '重置密码的链接已经发送到您的邮箱'
+        });
+      }
+    });
   }
   handleJoin(e){
     e.preventDefault();
@@ -79,8 +116,9 @@ export default class Account extends Component {
     const actions_signin = [
       <FlatButton
         label="密码忘了"
+        disabled={this.state.err_email0 !=''}
         primary={true}
-        onTouchTap={e => {this.setState({open:1});}}
+        onTouchTap={e => {this.handleFogotPwd({});}}
       />,
       <FlatButton
         label="我要注册"
@@ -109,6 +147,23 @@ export default class Account extends Component {
         keyboardFocused={true}
         disabled={this.state.err_pwd2 !='' || this.state.err_pwd1 !='' || this.state.err_email1 !=''}
         onTouchTap={this.handleJoin.bind(this)}
+      />,
+    ];
+
+    const actions_reset = [
+      <FlatButton
+        label="回到登录"
+        primary={true}
+        onTouchTap={e => {
+          this.setState({open:0});
+        }}
+      />,
+      <FlatButton
+        label="确定修改"
+        primary={true}
+        keyboardFocused={true}
+        disabled={this.state.err_pwd3 !='' || this.state.err_pwd4 !='' }
+        onTouchTap={this.handleReset.bind(this)}
       />,
     ];
 
@@ -226,6 +281,51 @@ export default class Account extends Component {
         />
     </Dialog>
  
+
+      <Dialog
+          contentStyle={customContentStyle}
+          title="修改密码"
+          actions={actions_reset}
+          modal={false}
+          open={this.state.open==2}
+          onRequestClose={this.handleClose.bind(this)}
+        >
+         <Subheader style={{color: red500}}>{this.state.err_reset}</Subheader>
+
+        <TextField
+          fullWidth={true}
+          hintText="请输入您的新密码"
+          floatingLabelText="用户密码"
+          type="password"
+          errorText={this.state.err_pwd3}
+          value={this.state.val_pwd3}
+          onChange={e => {
+            var val = e.target.value;
+            if(val=='')             
+              this.setState({val_pwd3:val,err_pwd3:ERR_NULL_PWD});
+            else
+              this.setState({val_pwd3:val,err_pwd3:''});
+          }}
+        />
+        <TextField
+          fullWidth={true}
+          hintText="再次输入密码"
+          floatingLabelText="密码确认"
+          type="password"
+          errorText={this.state.err_pwd4}
+          value={this.state.val_pwd4}
+          onChange={e => {
+            var val = e.target.value;
+            let err ='';
+            if(val==''){
+              err = ERR_NULL_PWD;
+            }else if(val!=this.state.val_pwd3){
+              err = '密码不一致';
+            }
+            this.setState({val_pwd4:val,err_pwd4:err});
+          }}
+        />
+    </Dialog>
 
       </div>
     );

@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Accounts } from 'meteor/accounts-base'
 import '../imports/api/folder.js';
 
 import {watch} from  './guard.js';
@@ -93,6 +94,23 @@ function cachePath(fpath){
 }
 
 Meteor.startup(() => {
+  //设置邮件发送服务
+  if(settings.mail_url)
+    process.env.MAIL_URL = settings.mail_url;  
+  //reset mail content
+  Accounts.emailTemplates.resetPassword.text = function(user, url) {
+    //remove /# from url
+    let p0 = url.indexOf('#');
+    let link = url.substring(0,p0)+url.substring(p0+2);
+    return '访问以下链接可重设您的密码:\n' + link;
+  };
+
+  Accounts.emailTemplates.resetPassword.html = function (user, url) {
+    let p0 = url.indexOf('#');
+    let link = url.substring(0,p0)+url.substring(p0+2);
+   return  " 访问以下链接可重设您的密码:\n<br/>"+ link;
+  };
+
   //start dir watch
   watch();
   //cache pic_upload path
