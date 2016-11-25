@@ -40,14 +40,16 @@ export default class Account extends Component {
       open: open,
       err_join:'',
       err_login:'',
-      val_email0:'',
+      val_email0:'chen4w@163.com',
       val_email1:'',
       val_pwd0:'',
       val_pwd1:'',
       val_pwd2:'',
       val_pwd3:'',
       val_pwd4:'',
-      err_email0:'用户邮箱必填',
+      //err_email0:'用户邮箱必填',
+      err_email0:'',
+
       err_pwd0:ERR_NULL_PWD,
       err_pwd1:ERR_NULL_PWD,
       err_pwd2:ERR_NULL_PWD,
@@ -57,21 +59,24 @@ export default class Account extends Component {
     };
   }
   handleReset(e){
+    this.setState({bLoading:true,err_reset:''});
     Accounts.resetPassword(this.state.token, this.state.val_pwd3, (err) => {
       if (err) {
         this.setState({
-          err_reset: err.reason
+          err_reset: err.reason,
+          bLoading:false
         });
       } else {
          this.setState({
-          err_reset: '密码修改成功'
+          err_reset: '密码修改成功',
+          bLoading:false
         });
       }
     });
   }
 
   handleFogotPwd(e){
-    this.setState({bLoading:true});
+    this.setState({bLoading:true,err_login:''});
     Accounts.forgotPassword({email: this.state.val_email0}, (err) => {
       if (err) {
         this.setState({
@@ -88,7 +93,7 @@ export default class Account extends Component {
   }
   handleJoin(e){
     e.preventDefault();
-    this.setState({bLoading:true});
+    this.setState({bLoading:true,err_join:''});
     let email = this.state.val_email1;
     let name = email;
     let password = this.state.val_pwd1;
@@ -107,7 +112,7 @@ export default class Account extends Component {
   }
   handleLogin(e){
     e.preventDefault();
-    this.setState({bLoading:true});
+    this.setState({bLoading:true,err_login:''});
     let email = this.state.val_email0;
     let password = this.state.val_pwd0;
     Meteor.loginWithPassword(email, password, (err) => {

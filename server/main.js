@@ -97,6 +97,8 @@ Meteor.startup(() => {
   //设置邮件发送服务
   if(settings.mail_url)
     process.env.MAIL_URL = settings.mail_url;  
+
+  Accounts.emailTemplates.from = settings.mail_from;
   //reset mail content
   Accounts.emailTemplates.resetPassword.text = function(user, url) {
     //remove /# from url
@@ -108,7 +110,8 @@ Meteor.startup(() => {
   Accounts.emailTemplates.resetPassword.html = function (user, url) {
     let p0 = url.indexOf('#');
     let link = url.substring(0,p0)+url.substring(p0+2);
-   return  " 访问以下链接可重设您的密码:\n<br/>"+ link;
+   return  " 访问以下链接可重设您的密码:\n<br/><a href=\""
+    + link+"\">"+link+"</a>";
   };
 
   //start dir watch
