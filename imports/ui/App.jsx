@@ -47,7 +47,8 @@ const styles = {
   toolbar:{
     position: 'fixed',
     top: 0,
-    width: '100%'
+    width: '100%',
+    height:45,
   },
   checkbox: {
     marginTop: 12,

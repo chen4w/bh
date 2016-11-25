@@ -1,5 +1,7 @@
 
 import React, { Component, PropTypes } from 'react';
+import {Toolbar} from 'material-ui/Toolbar';
+
 import AutoComplete from 'material-ui/AutoComplete';
 import ShareButtons from './ShareButtons.jsx';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -19,22 +21,22 @@ export default class Share extends React.Component {
     super(props);
     //console.log(this.props.params.fpath);
     let fpath = this.props.params.fpath;
-    if(fpath){
-        fpath = settings.pic_archive+settings.path_sep+fpath;
-    }else{
-        //默认显示墙纸目录
+    if(!fpath){
         fpath = settings.pic_wallpaper;
     }
     let me = this;
     this.state = {
-        path:fpath,
+        path:settings.pic_archive + settings.path_sep+fpath,
+        path_sel:fpath,
+        path_root:settings.pic_archive,
         folders:[],
         pics:[],
+        page:0,
         bShowBtn:false,
         hasMore:false,
         items:[],
     };
-    Meteor.call('folder.listfolder', settings.pic_archive, function(error, result){
+    Meteor.call('folder.listfolder', this.state.path_root, function(error, result){
         if(error){
             console.log(error);
         } else {
@@ -42,21 +44,28 @@ export default class Share extends React.Component {
             me.setState({folders:result});
         }
     });
-
-    Meteor.call('folder.getpics', this.state.path, function(error, result){
+    this.onDirChange(this.state.path_sel);
+  }
+  onDirChange(p1){
+    let me = this;
+    let path = this.state.path_root+settings.path_sep+ p1;
+    Meteor.call('folder.getpics',path , function(error, result){
         if(error){
             console.log(error);
         } else {
-            //console.log('----正在请求图片：'+result);
-            me.setState({
-                pics:result,
-                sb_open:true,
-                hasMore:true,
-              sb_msg:'当前目录共'+result.length+'张图'});
-            //console.log('--请求结束--'+result);
+         me.setState({
+            path:path,
+            path_sel:p1,
+            pics:result,
+            hasMore:true,
+            sb_open:true,
+            page:0,
+            items:[],
+            sb_msg:'当前目录共'+result.length+'张图'});
         }
     });
   }
+
 getChildContext() {
     return { muiTheme: getMuiTheme(baseTheme) };
 }
@@ -120,18 +129,20 @@ render() {
 
     return (
     <div>
+   <Toolbar style={{position: 'fixed',top: 0,width: '100%',zIndex:10,height:45}}>
         <AutoComplete
           style={{paddingLeft:10}}
           hintText="输入目录路径"
           dataSource={this.state.folders}
-          searchText={this.state.path}
+          searchText={this.state.path_sel}
           openOnFocus={true}
+          onNewRequest={this.onDirChange.bind(this)}
           maxSearchResults={5}
           fullWidth={true}
         />
-
+ </Toolbar>
     <InfiniteScroll
-    pageStart={0}
+    pageStart={this.state.page}
     loadMore={this.loadMore.bind(this)}
     hasMore={this.state.hasMore}
     loader={<div className="loader">Loading ...</div>}>
