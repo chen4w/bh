@@ -1,5 +1,7 @@
 
 import React, { Component, PropTypes } from 'react';
+import {  browserHistory } from 'react-router';
+
 import {Toolbar} from 'material-ui/Toolbar';
 
 import AutoComplete from 'material-ui/AutoComplete';
@@ -53,12 +55,14 @@ export default class Share extends React.Component {
         if(error){
             console.log(error);
         } else {
+         browserHistory.push('/share/'+p1.replace(/\\|\//g,'-'));
          me.setState({
             path:path,
             path_sel:p1,
             pics:result,
             hasMore:true,
             sb_open:true,
+            //url:browserHistory.getCurrentLocation(),
             page:0,
             items:[],
             sb_msg:'当前目录共'+result.length+'张图'});
@@ -120,6 +124,7 @@ render() {
     if(this.state.bShowBtn){
         btn_el = 
     <ShareButtons
+        url={location.href}
         title='我在杭州工艺美术博物馆的涂鸦' 
         sites = {["qzone", "weibo", "qq", "tencent", "wechat", "douban" ]}
         description = "即兴创作，一起来玩"
