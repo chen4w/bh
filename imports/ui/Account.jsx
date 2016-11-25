@@ -50,7 +50,7 @@ export default class Account extends Component {
       open: open,
       err_join:'',
       err_login:'',
-      val_email0:'chen4w@163.com',
+      val_email0:'',
       val_email1:'',
       val_pwd0:'',
       val_pwd1:'',
