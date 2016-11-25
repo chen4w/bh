@@ -62,7 +62,6 @@ export default class Share extends React.Component {
             pics:result,
             hasMore:true,
             sb_open:true,
-            //url:browserHistory.getCurrentLocation(),
             page:0,
             items:[],
             sb_msg:'当前目录共'+result.length+'张图'});
@@ -145,13 +144,13 @@ render() {
           maxSearchResults={5}
           fullWidth={true}
         />
- </Toolbar>
+    </Toolbar>
+    <div style={{marginTop:50}}>
     <InfiniteScroll
     pageStart={this.state.page}
     loadMore={this.loadMore.bind(this)}
     hasMore={this.state.hasMore}
     loader={<div className="loader">Loading ...</div>}>
-
         <Masonry
             onClick={this.handleClick.bind(this)}
             className={''} // default ''
@@ -160,10 +159,10 @@ render() {
             disableImagesLoaded={false} // default false
             updateOnEachImageLoad={false} // default false and works only if disableImagesLoaded is false
         >
-        <br/><br/>
-            {this.state.items}
+        {this.state.items}
         </Masonry>
     </InfiniteScroll>
+    </div>
         {btn_el}
         
     </div>
