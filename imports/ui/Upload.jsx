@@ -25,6 +25,9 @@ export default class Upload extends Component {
       files: [],
     };
   }
+  componentDidMount() {
+    document.title='拍照上传';
+  }
 
     onDrop (acceptedFiles) {
       let xhr = new XMLHttpRequest(); 

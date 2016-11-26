@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import {  browserHistory } from 'react-router';
 
-import {Toolbar} from 'material-ui/Toolbar';
+import {Toolbar, ToolbarTitle} from 'material-ui/Toolbar';
 
 import AutoComplete from 'material-ui/AutoComplete';
 import ShareButtons from './ShareButtons.jsx';
@@ -67,6 +67,9 @@ export default class Share extends React.Component {
             sb_msg:'当前目录共'+result.length+'张图'});
         }
     });
+  }
+  componentDidMount() {
+    document.title='社交分享';
   }
 
 getChildContext() {
@@ -135,15 +138,19 @@ render() {
     <div>
    <Toolbar style={{position: 'fixed',top: 0,width: '100%',zIndex:10,height:45}}>
         <AutoComplete
-          style={{paddingLeft:10}}
+          style={{paddingLeft:0}}
           hintText="输入目录路径"
           dataSource={this.state.folders}
           searchText={this.state.path_sel}
           openOnFocus={true}
           onNewRequest={this.onDirChange.bind(this)}
           maxSearchResults={5}
-          fullWidth={true}
+          fullWidth={false}
         />
+        <div style={{marginTop:15,width:50,float:'left',
+            color:'#a4acc2',whiteSpace: 'nowrap'}}>
+            {this.state.pics.length+"张"} 
+        </div>
     </Toolbar>
     <div style={{marginTop:50}}>
     <InfiniteScroll

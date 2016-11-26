@@ -54,7 +54,7 @@ const styles = {
     marginTop: 12,
     marginBottom: 17,
     marginLeft: 12,
-    width: 100
+    width: 80
    },
   label: {
     marginTop: 20,
@@ -378,7 +378,6 @@ export default class App extends Component {
       </ToolbarGroup>
 
         <ToolbarGroup >
-       <ToolbarSeparator />
 
     <IconButton tooltip="退出登录"
       onTouchTap={e => this.handleLogoutOpen()} >
