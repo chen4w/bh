@@ -57,7 +57,7 @@ export function cacheFile(fpath,func) {
       buf_src = fs.readFileSync(fpath_src);
       fsCache.set(fpath_src,buf_src);
     }
-    gm(buf_src).resize(tbn_len).toBuffer(
+    gm(buf_src).autoOrient().resize(tbn_len).toBuffer(
       path.extname(fpath_src),
       function(err, buf) {
         if (err){
@@ -127,6 +127,7 @@ Meteor.startup(() => {
      //先尝试读取缓存
     let data = fsCache.get(fpath);
     if(data){
+        console.log('hit cache:'+fpath);
         res.writeHead(200, {'Content-Type': 'image'});
         res.write(data);
         res.end();
