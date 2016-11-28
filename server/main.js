@@ -99,18 +99,25 @@ Meteor.startup(() => {
     process.env.MAIL_URL = settings.mail_url;  
 
   Accounts.emailTemplates.from = settings.mail_from;
+  Accounts.emailTemplates.resetPassword.subject=function(user, url) {
+    return  settings.sn+' 重置密码的邮件';
+  }
   //reset mail content
   Accounts.emailTemplates.resetPassword.text = function(user, url) {
     //remove /# from url
+    console.log('url:'+url);
     let p0 = url.indexOf('#');
-    let link = url.substring(0,p0)+url.substring(p0+2);
+    //替换默认的localhost:3000
+    //let link = url.substring(0,p0)+url.substring(p0+2);
+    let link = 'http://'+settings.host+':'+settings.port_web+url.substring(p0+1);
     return '访问以下链接可重设您的密码:\n' + link;
   };
 
   Accounts.emailTemplates.resetPassword.html = function (user, url) {
     let p0 = url.indexOf('#');
-    let link = url.substring(0,p0)+url.substring(p0+2);
-   return  " 访问以下链接可重设您的密码:\n<br/><a href=\""
+    //let link = url.substring(0,p0)+url.substring(p0+2);
+     let link = 'http://'+settings.host+':'+settings.port_web+url.substring(p0+1);
+  return  " 访问以下链接可重设您的密码:\n<br/><a href=\""
     + link+"\">"+link+"</a>";
   };
 
