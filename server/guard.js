@@ -30,15 +30,19 @@ export function watch() {
         var io = scope.network.io;
         console.log('watching '+settings.pic_root);
         var chokidar = require('chokidar');
-        var watcher = chokidar.watch(['**/*.jpg','**/*.png'],{
+        var cfg = {
             ignored: /[\/\\]\./,
             cwd:settings.pic_root,
-            ignoreInitial: true,
-            awaitWriteFinish: {
+            ignoreInitial: true
+        };
+        if(settings.stabilityThreshold){
+            cfg.awaitWriteFinish= {
                 stabilityThreshold: settings.stabilityThreshold,
                 pollInterval: 100
-            }
-        });   
+            };
+        }
+
+        var watcher = chokidar.watch(['**/*.jpg','**/*.png'],cfg);   
         watcher.on('add', fp => {
             cacheFile(getTbPath(fp),function(data){
                 io.emit('added',[fp]);
