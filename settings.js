@@ -36,7 +36,7 @@ class Setting {
     if(path.sep=='/')
       this.pic_root = "/Users/c4w/git/pics";
     else
-      this.pic_root = "c:\\pics";
+      this.pic_root = "d:\\bhere\\pics";
     //常用间接设置量,
     this.url_root = 'http://'+this.host+ ':'+this.port_web
       +this.pic_url;
