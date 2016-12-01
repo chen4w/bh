@@ -41,6 +41,10 @@ export function watch() {
                 pollInterval: 100
             };
         }
+        //for mac
+        if(path.sep=='/'){
+            cfg.usePolling=true;
+        }
 
         var watcher = chokidar.watch(['**/*.jpg','**/*.png'],cfg);   
         watcher.on('add', fp => {
@@ -55,7 +59,7 @@ export function watch() {
         })
         .on('unlink', fp => {
             io.emit('deleted',[fp]);
-            console.log('unlink:'+fp);
+            //console.log('unlink:'+fp);
         });
 
     }],  

@@ -19,6 +19,14 @@ const fsCache = new NodeCache({ stdTTL: 24*3600, checkperiod: 3600, useClones:fa
 const path_tbn = settings.thumbnails_uri + settings.thumbnails_size+path.sep;
 
 export function cacheFile(fpath,func) {
+  //击中缓存，无需延时
+  let data =  fsCache.get(fpath);
+  if(data){
+    if(func){
+      func(data);
+    }
+    return;
+  }
   if(settings.cacheSpan){
     setTimeout(function(){
       cachef(fpath,func);
@@ -30,14 +38,7 @@ export function cacheFile(fpath,func) {
 //cache原始图或抽点图,tbn_len=0:原始图, tbn_len>0 抽点图 
 function cachef(fpath,func) {
   // /P /N maybe exists
-  let data =  fsCache.get(fpath);
-  if(data){
-    if(func){
-      func(data);
-    }
-    return;
-  }
-  //非抽点图
+ //非抽点图
   if(fs.existsSync(fpath)) {
     let data = fs.readFileSync(fpath);
     if(settings.fs_cache){
