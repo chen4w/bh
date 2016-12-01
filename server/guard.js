@@ -55,6 +55,7 @@ export function watch() {
         })
         .on('unlink', fp => {
             io.emit('deleted',[fp]);
+            console.log('unlink:'+fp);
         });
 
     }],  

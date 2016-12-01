@@ -194,7 +194,7 @@ export default class App extends Component {
     let ns = {pics:pics,sb_open:true,sb_msg:'移除图片：'+data};
     if(bsel){
       ns.bLoading = false;
-      ns.sels = sels;
+      //ns.sels = sels;
       if(sels.length==0){
         ns.bSelAll=false;
       }
