@@ -86,11 +86,24 @@ function cachePath(fpath){
       else
         return false;
   });
-  console.log('caching '+ls.length+' pics from:'+ fpath);
-  ls.forEach(function (item, index, array) {
-    let fn = fpath+ path.sep + path_tbn + item;
-    cacheFile(fn);
-  });
+  //console.log('caching '+ls.length+' pics from:'+ fpath);
+  //改用异步方式,避免开始大量图片抽点造成机器僵死
+  let pos =0;
+  let len = ls.length;
+  console.log('cache '+ls.length+' pics from:'+ fpath);
+  if(len==0)
+    return;
+
+  //let fn = fpath+ path.sep + path_tbn + ls[pos];
+  let func = function(pos){
+    pos++;
+    if(pos>=ls.length)
+        return;
+     let fn = fpath+ path.sep + path_tbn + ls[pos];
+     console.log('cache file '+(pos+1)+'/'+len+':'+fn);
+     cacheFile(fn,func(pos));
+  }
+  func(-1);
 }
 
 Meteor.startup(() => {
