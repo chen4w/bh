@@ -19,13 +19,14 @@ class Setting {
     this.pic_url = '/img/'; //图片url起始路径
     this.port_sock = 8200;  //webSocket端口
     this.port_web = 3000; //web端口
-    this.host = '172.16.2.72';  //服务的ip地址,用于移动App请求
-    //this.host = '192.168.1.77';
-    this.stabilityThreshold = 2000; //监测文件延时,直到此时间(ms)内文件不再增长才触发added消息
+    //this.host = '172.16.2.72';  //服务的ip地址,用于移动App请求
+    this.host = '192.168.1.99';
+    this.stabilityThreshold = 0; //监测文件延时,直到此时间(ms)内文件不再增长才触发added消息
+    this.cacheSpan = 200;
 
     this.thumbnails_size=450; //默认的抽点尺寸
     this.thumbnails_uri ='tbnails'; //抽点保留路径名
-    this.fs_cache = true; //是否进行缓存
+    this.fs_cache = true; //是否进行缓存延迟,避免批量抽点导致僵死
 
     this.pic_upload = 'upload';   //上传目录
     this.pic_archive = 'archive';   //归档目录

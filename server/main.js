@@ -18,8 +18,25 @@ const fsCache = new NodeCache({ stdTTL: 24*3600, checkperiod: 3600, useClones:fa
 
 const path_tbn = settings.thumbnails_uri + settings.thumbnails_size+path.sep;
 
-//cache原始图或抽点图,tbn_len=0:原始图, tbn_len>0 抽点图 
 export function cacheFile(fpath,func) {
+  if(settings.cacheSpan){
+    setTimeout(function(){
+      cachef(fpath,func);
+    },settings.cacheSpan);
+  }else{
+    cachef(fpath,func);
+  }
+}
+//cache原始图或抽点图,tbn_len=0:原始图, tbn_len>0 抽点图 
+function cachef(fpath,func) {
+  // /P /N maybe exists
+  let data =  fsCache.get(fpath);
+  if(data){
+    if(func){
+      func(data);
+    }
+    return;
+  }
   //非抽点图
   if(fs.existsSync(fpath)) {
     let data = fs.readFileSync(fpath);
@@ -68,7 +85,24 @@ export function cacheFile(fpath,func) {
           return;
         } 
         //cache thumbnail
-        fsCache.set(fpath,buf);
+        //cache /p /n also /upload  /upload/p  /upload/n
+        let f1 = fpath.substring(0,p0);
+        let p00 = f1.lastIndexOf(settings.pic_upload,p0-1);
+        //如果非upload目录,只缓存目录本身,否则缓存3个转移目录
+        if(p00==-1){
+           fsCache.set(fpath,buf);
+        }else{
+          let fpath_p = path.join(fpath.substring(0,p00-1),settings.pic_upload,'p',fpath.substring(p0+1));
+          let fpath_n = path.join(fpath.substring(0,p00-1),settings.pic_upload,'n',fpath.substring(p0+1));
+          let fpath_o = path.join(fpath.substring(0,p00-1),settings.pic_upload,fpath.substring(p0+1));
+          //console.log('fp:'+fpath);
+          //console.log('p:'+fpath_p);
+          //console.log('n:'+fpath_n);
+          //console.log('o:'+fpath_o);
+          fsCache.set(fpath_p,buf);
+          fsCache.set(fpath_n,buf);
+          fsCache.set(fpath_o,buf);
+        }
         if(func)
           func(buf);
     });
@@ -98,6 +132,7 @@ function cachePath(fpath,cb){
   let func = function(pos){
     pos++;
     if(pos>=ls.length){
+      console.log('path cached:'+fpath);
       if(cb){
         cb();
       }
@@ -105,9 +140,9 @@ function cachePath(fpath,cb){
     }
      let fn = fpath+ path.sep + path_tbn + ls[pos];
      console.log('cache file '+(pos+1)+'/'+len+':'+fn);
-     setTimeout(function(){
-      cacheFile(fn,func(pos));
-     },200);
+     cacheFile(fn,function(){
+       func(pos);
+     });
   }
   func(-1);
 }

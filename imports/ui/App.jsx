@@ -194,6 +194,10 @@ export default class App extends Component {
     let ns = {pics:pics,sb_open:true,sb_msg:'移除图片：'+data};
     if(bsel){
       ns.bLoading = false;
+      ns.sels = sels;
+      if(sels.length==0){
+        ns.bSelAll=false;
+      }
     }
     this.setState(ns);
   }
@@ -211,6 +215,8 @@ export default class App extends Component {
             me.setState({
               path:path,
               path_sel:p1,pics:result,sb_open:true,
+              bSelAll:false,
+              sels:[],
               sb_msg:'当前目录共'+result.length+'张图'});
             //console.log('--请求结束--'+result);
         }
