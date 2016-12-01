@@ -76,7 +76,7 @@ export function cacheFile(fpath,func) {
 }
 
 //缓存目录下所有图片,预先生成抽点
-function cachePath(fpath){
+function cachePath(fpath,cb){
   //列出目录下所有文件
   let ls = fs.readdirSync(fpath).filter(function(file) {
       let en = path.extname(file);
@@ -97,11 +97,17 @@ function cachePath(fpath){
   //let fn = fpath+ path.sep + path_tbn + ls[pos];
   let func = function(pos){
     pos++;
-    if(pos>=ls.length)
-        return;
+    if(pos>=ls.length){
+      if(cb){
+        cb();
+      }
+      return;
+    }
      let fn = fpath+ path.sep + path_tbn + ls[pos];
      console.log('cache file '+(pos+1)+'/'+len+':'+fn);
-     cacheFile(fn,func(pos));
+     setTimeout(function(){
+      cacheFile(fn,func(pos));
+     },200);
   }
   func(-1);
 }
@@ -137,8 +143,9 @@ Meteor.startup(() => {
   //start dir watch
   watch();
   //cache pic_upload path
-  cachePath(path.join(settings.pic_root, settings.pic_upload));
-  cachePath(path.join(settings.pic_root, settings.pic_wallpaper));
+  cachePath(path.join(settings.pic_root, settings.pic_upload),function(){
+    cachePath(path.join(settings.pic_root, settings.pic_wallpaper));
+  });
   //a simple static files server for easy deploy 
   //handle get pic req
   WebApp.connectHandlers.use(settings.pic_url, (req, res) => {
