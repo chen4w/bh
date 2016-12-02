@@ -190,7 +190,7 @@ Meteor.startup(() => {
      //先尝试读取缓存
     let data = fsCache.get(fpath);
     if(data){
-        console.log('hit cache:'+fpath);
+        //console.log('hit cache:'+fpath);
         res.writeHead(200, {'Content-Type': 'image'});
         res.write(data);
         res.end();

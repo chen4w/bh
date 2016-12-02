@@ -4,6 +4,8 @@ const g_path = require('path');
 const mv = require('mv');
 const uuid = require('node-uuid');
 const settings = require('../../settings.js');
+let rlist = null;
+const picMap = {};
 
 class CFolder {
   constructor() {
@@ -67,6 +69,14 @@ class CFolder {
   }
   getPics(fpath,ipAddr){
     //convert url --> file path
+    //archive 下的文件不会发生变更，所以也可以进行缓存
+    if(fpath.indexOf(settings.pic_archive)!=-1){
+      let pic_list = picMap[fpath];
+      if(pic_list){
+        console.log('hit picMap:'+pic_list);
+        return pic_list;
+      }
+    }
     let dir = settings.pic_root+g_path.sep
       +fpath.replace(/\-/g,g_path.sep);
     console.log(dir);
@@ -84,22 +94,30 @@ class CFolder {
           rl.push({fn:fn});
       }        
     });
+    if(fpath.indexOf(settings.pic_archive)!=-1){
+      picMap[fpath] = rl;
+    }    
     return rl;
   }
   list(fpath) {
     return this.getChildren(settings.pic_root);
   }
   listFolder(fpath){
-      let rl = [];
+    //缓存文件目录列表
+      if(rlist){
+        //console.log('hit rlist:'+rlist);
+        return rlist;
+      }
+      rlist = [];
       let fproot = g_path.join(settings.pic_root,fpath);
-      this.walk(fproot, rl, fproot);
-      return rl;
+      this.walk(fproot, rlist, fproot);
+      return rlist;
   }
   walk(fpath, rl, fproot){
     //walk by absolute path, but return relative path
     let pn = fpath.substring(fproot.length+1);
     //exclude the root path
-    //忽略抽点目录
+    //忽略抽点目录,忽略没有图片的目录
     if(pn!="" && pn.indexOf(settings.thumbnails_uri)==-1)
       rl.push(pn);
     let me = this;
