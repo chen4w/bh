@@ -4,8 +4,9 @@ const g_path = require('path');
 const mv = require('mv');
 const uuid = require('node-uuid');
 const settings = require('../../settings.js');
-let rlist = null;
+
 const picMap = {};
+const dirMap = {};
 
 class CFolder {
   constructor() {
@@ -73,7 +74,7 @@ class CFolder {
     if(fpath.indexOf(settings.pic_archive)!=-1){
       let pic_list = picMap[fpath];
       if(pic_list){
-        console.log('hit picMap:'+pic_list);
+        //console.log('hit picMap:'+pic_list);
         return pic_list;
       }
     }
@@ -104,14 +105,16 @@ class CFolder {
   }
   listFolder(fpath){
     //缓存文件目录列表
-      if(rlist){
-        //console.log('hit rlist:'+rlist);
-        return rlist;
-      }
-      rlist = [];
-      let fproot = g_path.join(settings.pic_root,fpath);
-      this.walk(fproot, rlist, fproot);
-      return rlist;
+    let rl = dirMap[fpath];
+    if(rl){
+      //console.log('hit rlist:'+rl);
+      return rl;
+    }
+    rl = [];
+    let fproot = g_path.join(settings.pic_root,fpath);
+    this.walk(fproot, rl, fproot);
+    dirMap[fpath]=rl;
+    return rl;
   }
   walk(fpath, rl, fproot){
     //walk by absolute path, but return relative path
