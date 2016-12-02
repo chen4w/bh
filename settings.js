@@ -3,6 +3,22 @@ var path = require("path");
 
 class Setting {
   constructor() {
+    /**-------必须修改的配置-------**/
+    //this.host = '172.16.2.72';  //服务的ip地址,用于移动App请求
+    this.host = '192.168.221.198';
+    //服务端文件目录分隔符,client端无法自动获取服务的 path.sep
+    //for windows
+    this.path_sep = '\\';
+    //for mac linux
+    //this.path_sep = '/';
+    //图片文件根目录
+    if(path.sep=='/')
+      this.pic_root = "/Users/c4w/git/pics";
+    else
+      this.pic_root = "c:\\git\\pics";
+    
+
+  /**-------默认配置即可-------**/
     this.version='2016.12';
     //必须是唯一的名称,将其hash值作为云端唯一标识
     this.sn = '杭州工艺美术博物馆';
@@ -19,8 +35,6 @@ class Setting {
     this.pic_url = '/img/'; //图片url起始路径
     this.port_sock = 8200;  //webSocket端口
     this.port_web = 3000; //web端口
-    //this.host = '172.16.2.72';  //服务的ip地址,用于移动App请求
-    this.host = '192.168.1.77';
     this.stabilityThreshold = 1000; //监测文件延时,直到此时间(ms)内文件不再增长才触发added消息
     this.cacheSpan = 200; //缓存延时,避免cpu阻塞
 
@@ -31,13 +45,7 @@ class Setting {
     this.pic_upload = 'upload';   //上传目录
     this.pic_archive = 'archive';   //归档目录
     this.pic_wallpaper = 'wallpaper'; //墙纸目录
-    this.path_sep = path.sep;
 
-    //图片文件根目录
-    if(path.sep=='/')
-      this.pic_root = "/Users/c4w/git/pics";
-    else
-      this.pic_root = "d:\\bhere\\pics";
     //常用间接设置量,
     this.url_root = 'http://'+this.host+ ':'+this.port_web
       +this.pic_url;
