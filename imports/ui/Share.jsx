@@ -25,6 +25,8 @@ export default class Share extends React.Component {
     let fpath = this.props.params.fpath;
     if(!fpath){
         fpath = settings.pic_wallpaper;
+    }else{
+        fpath = fpath.replace(/\-/g,settings.path_sep);
     }
     let me = this;
     this.state = {

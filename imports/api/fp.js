@@ -103,6 +103,7 @@ class CFolder {
   list(fpath) {
     return this.getChildren(settings.pic_root);
   }
+  //虽然每天归档会生成新的目录，但是重启服务也会刷新缓存
   listFolder(fpath){
     //缓存文件目录列表
     let rl = dirMap[fpath];
@@ -117,14 +118,18 @@ class CFolder {
     return rl;
   }
   walk(fpath, rl, fproot){
-    //walk by absolute path, but return relative path
-    let pn = fpath.substring(fproot.length+1);
     //exclude the root path
-    //忽略抽点目录,忽略没有图片的目录
-    if(pn!="" && pn.indexOf(settings.thumbnails_uri)==-1)
-      rl.push(pn);
     let me = this;
     let l = me.getChildren(fpath);
+    //没有子目录的目录才进入列表
+    if(l.length==0){
+      //walk by absolute path, but return relative path
+      let pn = fpath.substring(fproot.length+1);
+      //忽略抽点目录,忽略没有图片的目录(只列出 日 目录，将来可以改进为列出所有目录，点击目录图标进入该目录)
+      //if(pn!="" && pn.indexOf(settings.thumbnails_uri)==-1)
+        console.log('push:'+pn);
+        rl.push(pn);
+    }
     l.forEach(function (item, index, array) {
         me.walk(fpath+g_path.sep+item, rl,fproot);
     });
