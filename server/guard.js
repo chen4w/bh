@@ -49,16 +49,16 @@ export function watch() {
         var watcher = chokidar.watch(['**/*.jpg','**/*.png'],cfg);   
         watcher.on('add', fp => {
             cacheFile(getTbPath(fp),function(data){
-                io.emit('added',[fp]);
+                io.emit('added',[fp.replace(/\\/g,'/')]);
             });
         })
         .on('change', fp => {
             cacheFile(getTbPath(fp),function(data){
-                io.emit('added',[fp]);
+                io.emit('added',[fp.replace(/\\/g,'/')]);
             });
         })
         .on('unlink', fp => {
-            io.emit('deleted',[fp]);
+            io.emit('deleted',[fp.replace(/\\/g,'/')]);
             //console.log('unlink:'+fp);
         });
 

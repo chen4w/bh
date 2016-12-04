@@ -27,7 +27,7 @@ class CFolder {
 
   pass(pics, bPass){
     pics.forEach(function(item){
-      let fsrc = g_path.join(settings.pic_root,item);
+      let fsrc = g_path.join(settings.pic_root,item.replace(/\//g,g_path.sep));
       let p1 = fsrc.lastIndexOf(g_path.sep);
       let p0 = fsrc.lastIndexOf(g_path.sep,p1-1);
 
