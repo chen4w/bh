@@ -26,11 +26,11 @@ export default class Share extends React.Component {
     if(!fpath){
         fpath = settings.pic_wallpaper;
     }else{
-        fpath = fpath.replace(/\-/g,settings.path_sep);
+        fpath = fpath.replace(/\-/g,'/');
     }
     let me = this;
     this.state = {
-        path:settings.pic_archive + settings.path_sep+fpath,
+        path:settings.pic_archive + '/'+fpath,
         path_sel:fpath,
         path_root:settings.pic_archive,
         folders:[],
@@ -52,12 +52,12 @@ export default class Share extends React.Component {
   }
   onDirChange(p1){
     let me = this;
-    let path = this.state.path_root+settings.path_sep+ p1;
+    let path = this.state.path_root+'/'+ p1;
     Meteor.call('folder.getpics',path , function(error, result){
         if(error){
             console.log(error);
         } else {
-         browserHistory.push('/share/'+p1.replace(/\\|\//g,'-'));
+         browserHistory.push('/share/'+p1.replace(/\//g,'-'));
          me.setState({
             path:path,
             path_sel:p1,
@@ -95,7 +95,7 @@ loadMore(page) {
     //屏幕宽度小于抽点图片尺寸,则强制图片与屏幕等宽
     let img_w = w < 450 ? w: 450;
     //share/2016-11-21/ 替换路径符号和-
-    let path_imgsrc = settings.url_root+ this.state.path.replace(/\\|\-/g,'/')  +'/';
+    let path_imgsrc = settings.url_root+ this.state.path  +'/';
     if(settings.thumbnails_size>0)
       path_imgsrc+= settings.thumbnails_uri+settings.thumbnails_size +'/';
     

@@ -68,8 +68,9 @@ class CFolder {
         console.log(err);
     });
   }
-  getPics(fpath,ipAddr){
+  getPics(path,ipAddr){
     //convert url --> file path
+    let fpath = path.replace(/\//g,g_path.sep);
     //archive 下的文件不会发生变更，所以也可以进行缓存
     if(fpath.indexOf(settings.pic_archive)!=-1){
       let pic_list = picMap[fpath];
@@ -78,8 +79,7 @@ class CFolder {
         return pic_list;
       }
     }
-    let dir = settings.pic_root+g_path.sep
-      +fpath.replace(/\-/g,g_path.sep);
+    let dir = settings.pic_root+g_path.sep+fpath;
     console.log(dir);
     let rl = [];
     if (!g_fs.existsSync(dir)) {
@@ -100,11 +100,9 @@ class CFolder {
     }    
     return rl;
   }
-  list(fpath) {
-    return this.getChildren(settings.pic_root);
-  }
   //虽然每天归档会生成新的目录，但是重启服务也会刷新缓存
-  listFolder(fpath){
+  listFolder(path){
+    let fpath = path.replace(/\//g,g_path.sep);
     //缓存文件目录列表
     let rl = dirMap[fpath];
     if(rl){
@@ -125,8 +123,10 @@ class CFolder {
     if(l.length==0){
       //walk by absolute path, but return relative path
       let pn = fpath.substring(fproot.length+1);
-      //忽略抽点目录,忽略没有图片的目录(只列出 日 目录，将来可以改进为列出所有目录，点击目录图标进入该目录)
-      //if(pn!="" && pn.indexOf(settings.thumbnails_uri)==-1)
+      if(g_path.sep=='\\'){
+        pn = pn.replace(/\\/g,'/');
+      }
+      //抽点目录目录在缓存里,不会列出,忽略没有图片的目录(只列出 日 目录，将来可以改进为列出所有目录，点击目录图标进入该目录)
         console.log('push:'+pn);
         rl.push(pn);
     }

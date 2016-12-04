@@ -155,7 +155,7 @@ export default class App extends Component {
       //忽略抽点推送的抽点文件,忽略待处理目录下的/p /n 目录
       let fn = dk.substring(plen+1);
       if(dk.indexOf(this.state.path)!=0 
-        ||fn.indexOf(settings.path_sep)!=-1 ||
+        ||fn.indexOf('/')!=-1 ||
         (!ldk.endsWith('.jpg')&& !ldk.endsWith('.png')&& !ldk.endsWith('.jpeg')))
         continue;
       pics.push({fn:fn});
@@ -172,7 +172,7 @@ export default class App extends Component {
       let dk = data[k];
       let fn = dk.substring(plen+1);
       if(dk.indexOf(this.state.path)!=0 
-        ||fn.indexOf(settings.path_sep)!=-1 )
+        ||fn.indexOf('/')!=-1 )
         continue;
       //remove paper
       for(var i=0; i<pics.length; i++){
@@ -206,7 +206,7 @@ export default class App extends Component {
   }
   onDirChange(p1){
     let me = this;
-    let path = p1==''?this.state.path_root:this.state.path_root+settings.path_sep+ p1;
+    let path = p1==''?this.state.path_root:this.state.path_root+'/'+ p1;
     Meteor.call('folder.getpics',path , function(error, result){
         if(error){
             console.log(error);
@@ -234,7 +234,7 @@ export default class App extends Component {
     console.log(p1);
     let me = this;
     let pics = [];
-    let path = this.state.path+settings.path_sep;
+    let path = this.state.path+'/';
     this.state.sels.forEach(function (item, index, array) {
       pics.push(path+item.fn);
     });
@@ -295,7 +295,7 @@ export default class App extends Component {
 
   renderPaints() {
     //相对路径会导致ios设备无法获取到图片
-    let path_imgsrc = settings.url_root+ this.state.path.replace(/\\/g,'/')  +'/';
+    let path_imgsrc = settings.url_root+ this.state.path  +'/';
     if(settings.thumbnails_size>0)
       path_imgsrc+= settings.thumbnails_uri+settings.thumbnails_size +'/';
     //是否限制显示前n张,规避pad上的性能问题,pc显示全部
@@ -370,7 +370,7 @@ export default class App extends Component {
           />
   
     <IconButton tooltip="通过"
-      disabled={!bSelOne || this.state.path.endsWith(settings.path_sep+'p')}
+      disabled={!bSelOne || this.state.path.endsWith('/p')}
       onTouchTap={e => this.handlePass(true)} >
       <CheckIcon />
     </IconButton>
