@@ -22,8 +22,13 @@ class Setting {
     this.sn_md5 = '81949faebfe3c5ff42bcbd5c06a06511';
     
     //smtp服务账号,用于发送密码重置或验证
-    this.mail_url = 'smtp://sinosoftechtest:sinosoft123456@smtp.sina.com'; 
-    this.mail_from = 'sinosoftechtest@sina.com'; 
+    //this.mail_url = 'smtp://sinosoftechtest:sinosoft123456@smtp.sina.com'; 
+    //this.mail_from = 'sinosoftechtest@sina.com'; 
+    this.mail_url = 'smtp://hzacm_bhere:hzacm123@smtp.163.com'; 
+    this.mail_from = 'hzacm_bhere@163.com'; 
+    //this.mail_url = 'smtp://chen4w:313wansheng@smtp.163.com'; 
+    //this.mail_from = 'chen4w@163.com'; 
+
     //二维码对应的拍照上传url,如果不设置直接取当前网页location
     this.url_upload = "http://www.zgdjss.com/unity/vr360/hzmg/tour.html";
     this.share_limit = 5;//社交分享无限滚动每次加载张数
