@@ -23,3 +23,12 @@ export const renderRoutes = () => (
   </Route>
   </Router>
 );
+
+export const renderShare = () => (
+  <Router history={browserHistory}>
+  <Route path="/" component={Share} />
+  <Route path='share' component={Share} >
+    <Route path="/share/:fpath" component={Share}/>
+  </Route>
+  </Router>
+);
