@@ -13,7 +13,8 @@ import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {red500} from 'material-ui/styles/colors';
 
- 
+const settings = require('../../settings.js');
+
 const styles = {
   customContentStyle: {
     position: 'relative',
@@ -152,12 +153,7 @@ export default class Account extends Component {
         disabled={this.state.err_email0 !=''}
         primary={true}
         onTouchTap={e => {this.handleFogotPwd({});}}
-      />,
-      <FlatButton
-        label="我要注册"
-        primary={true}
-        onTouchTap={e => {this.setState({open:1});}}
-      />,
+      />,       
       <FlatButton
         label="确定登录"
         primary={true}
@@ -166,6 +162,16 @@ export default class Account extends Component {
         onTouchTap={this.handleLogin.bind(this)}
       />,
     ];
+   if(settings.bRegister){
+    actions_signin.push(
+      <FlatButton
+        label="我要注册"
+        disabled={settings.canRegister}
+        primary={true}
+        onTouchTap={e => {this.setState({open:1});}}
+      />
+   );
+   }
     const actions_join = [
       <FlatButton
         label="回到登录"
