@@ -18,7 +18,7 @@ class Setting {
     
 
   /**-------默认配置即可-------**/
-    this.version='2016.12';
+    this.version='2016.12.12';
     //必须是唯一的名称,将其hash值作为云端唯一标识
     this.sn = '杭州工艺美术博物馆';
     this.sn_md5 = '81949faebfe3c5ff42bcbd5c06a06511';

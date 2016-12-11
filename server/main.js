@@ -76,7 +76,7 @@ export function cacheFile(fpath,func) {
     if(func){
       func(data);
     }
-    console.log('cacheFile hit:'+fpath);
+    //console.log('cacheFile hit:'+fpath);
     return;
   }
   if(settings.cacheSpan){
