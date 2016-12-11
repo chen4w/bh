@@ -1,7 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import { check } from 'meteor/check';
+import { check ,Match} from 'meteor/check';
 import {cf} from './fp.js';
+import {rotatePics} from  '../../server/main.js';
 
 Meteor.methods({
     //list all subfolder
@@ -25,6 +26,11 @@ Meteor.methods({
  'pic.remove'(pics) {
     check(pics, [String]); 
     return cf.remove(pics,this.connection.clientAddress);
+  },
+ 'pic.rotate'(pics,angle) {
+    check(pics, [String]); 
+    check(angle, Match.Integer);     
+    return rotatePics(pics,angle,0);
   },
 
  'pic.take'(data,fpath){

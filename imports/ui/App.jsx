@@ -13,6 +13,9 @@ import IconButton from 'material-ui/IconButton';
 import CheckIcon from 'material-ui/svg-icons/navigation/check';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import PowerIcon from 'material-ui/svg-icons/action/power-settings-new';
+import RotateIcon from 'material-ui/svg-icons/device/screen-rotation';
+import RotateLeftIcon from 'material-ui/svg-icons/image/rotate-left';
+import RotateRightIcon from 'material-ui/svg-icons/image/rotate-right';
 
 //import AutoComplete from 'material-ui/AutoComplete';
 import SelectField from 'material-ui/SelectField';
@@ -114,6 +117,10 @@ export default class App extends Component {
       console.log('deleted:'+data);
       me.onItemDeleted(data);
     });
+    socket.on('change', function(data) {
+      console.log('change:'+data);
+      me.onItemChange(data);
+    });
     /*---------websocket end--------*/
   }
   handleSBClose(){
@@ -162,6 +169,45 @@ export default class App extends Component {
     }   
     this.setState({sb_open:true,sb_msg:'新加入图片：'+data,pics:pics});
   }
+//图片被修改
+  onItemChange(data){
+    //当前目录
+    let pics = this.state.pics;
+    let sels = this.state.sels;
+    let plen = this.state.path.length;
+    let bsel = false;
+    for(var k=0; k<data.length; k++){
+      let dk = data[k];
+      let fn = dk.substring(plen+1);
+      if(dk.indexOf(this.state.path)!=0 
+        ||fn.indexOf('/')!=-1 )
+        continue;
+      //remove paper
+      for(var i=0; i<pics.length; i++){
+        if(pics[i].fn==fn){
+          //pics.splice(i,1);
+          //find the component and forceUpdate it
+          pics[i].tm = new Date().getTime();
+          break;
+        }
+      } 
+      //update from selected 是否本人操作结果,是则结束等待图标
+      for(var i=0; i<sels.length; i++){
+        if(sels[i].fn==fn){
+          //sels.splice(i,1);
+          bsel = true;
+          break;
+        }
+      }       
+    }   
+    //如果删除的是本人选中的，判定操作已完成，隐藏Loading图标
+    let ns = {pics:pics,sb_open:true,sb_msg:'修改图片：'+data};
+    if(bsel){
+      ns.bLoading = false;
+    }
+    this.setState(ns);
+  }
+
   onItemDeleted(data){
     //当前目录
     let pics = this.state.pics;
@@ -181,7 +227,7 @@ export default class App extends Component {
           break;
         }
       } 
-      //remove from selected
+      //remove from selected,是否本人操作结果,是则结束等待图标
       for(var i=0; i<sels.length; i++){
         if(sels[i].fn==fn){
           sels.splice(i,1);
@@ -221,6 +267,19 @@ export default class App extends Component {
             //console.log('--请求结束--'+result);
         }
     });
+  }
+  handleRotate(angle){
+    this.setState({bLoading:true});
+    let pics = [];
+    let path = this.state.path+'/';
+    this.state.sels.forEach(function (item, index, array) {
+      pics.push(path+item.fn);
+    });
+   Meteor.call('pic.rotate',pics,angle, function(error, result){
+        if(error){
+            console.log(error);
+        }
+    });    
   }
   handleDeleteOpen(){
     this.setState({openDelete: true});
@@ -304,7 +363,11 @@ export default class App extends Component {
     let result = [];
     for(var i=0; i<len; i++){
         let pic = this.state.pics[i];
-        result.push( <Paint key={i} pic={path_imgsrc+pic.fn} bsel={pic.bsel} par={this} pos={i}/>);
+        if(pic.tm){
+          result.push( <Paint key={i} pic={path_imgsrc+pic.fn+'?tm='+pic.tm} bsel={pic.bsel} par={this} pos={i}/>);
+        }else{
+          result.push( <Paint key={i} pic={path_imgsrc+pic.fn} bsel={pic.bsel} par={this} pos={i}/>);
+        }
     }
     return result;
   }
@@ -379,6 +442,18 @@ export default class App extends Component {
       disabled={!bSelOne}
       onTouchTap={e => this.handleDeleteOpen()} >
       <CloseIcon />
+    </IconButton>
+
+    <IconButton tooltip="左转"
+      disabled={!bSelOne}
+      onTouchTap={e => this.handleRotate(-90)} >
+      <RotateLeftIcon />
+    </IconButton>
+
+    <IconButton tooltip="右转"
+      disabled={!bSelOne}
+      onTouchTap={e => this.handleRotate(90)} >
+      <RotateRightIcon />
     </IconButton>
 
       </ToolbarGroup>

@@ -18,6 +18,55 @@ const fsCache = new NodeCache({ stdTTL: 24*3600, checkperiod: 3600, useClones:fa
 
 const path_tbn = settings.thumbnails_uri + settings.thumbnails_size+path.sep;
 
+function getTbPath(fp){
+    let p0 = fp.lastIndexOf(path.sep);
+    return fp.substring(0,p0+1)+path_tbn+fp.substring(p0+1);
+}
+export function rotatePic(fp,angle,func){
+  //清除同名文件缓存
+  let fkeys = [fp];
+  //清除抽点文件缓存
+  fkeys.push(getTbPath(fp));
+
+  let p00 = fp.indexOf(settings.pic_upload);
+  if(p00!=-1){
+    let p0 = fp.lastIndexOf(path.sep);
+    let fpath_p = path.join(fp.substring(0,p00-1),settings.pic_upload,'p',fp.substring(p0+1));
+    let fpath_n = path.join(fp.substring(0,p00-1),settings.pic_upload,'n',fp.substring(p0+1));
+    fkeys.push(fpath_p);
+    fkeys.push(fpath_n);
+    fkeys.push(getTbPath(fpath_p));
+    fkeys.push(getTbPath(fpath_n));
+  }     
+  //fp必须是原始文件路径而非抽点路径
+  let buf_src = fsCache.get(fp);
+  console.log('fkeys:'+fkeys);
+  fsCache.del(fkeys,function(){
+    gm(buf_src).rotate('green', angle).write(fp,
+    function(err, buf) {
+      if(err){
+        console.log(err);
+      }
+      func();
+    });
+  });
+}
+export function rotatePics(pics,angle,pic_pos){
+  //到头了
+  if(pic_pos>=pics.length)
+    return;
+  let fsrc = settings.pic_root+path.sep+pics[pic_pos];      
+  rotatePic(fsrc,angle,function(){
+    pic_pos+=1;
+    if(settings.rotateSpan){
+      setTimeout(function(){
+        rotatePics(pics,angle,pic_pos);
+      },settings.rotateSpan);
+    }else{
+      rotatePics(pics,angle,pic_pos);
+    }   
+  });
+}
 export function cacheFile(fpath,func) {
   //击中缓存，无需延时
   let data =  fsCache.get(fpath);
@@ -185,7 +234,13 @@ Meteor.startup(() => {
   //a simple static files server for easy deploy 
   //handle get pic req
   WebApp.connectHandlers.use(settings.pic_url, (req, res) => {
-    let fp =  settings.pic_root + req.url.replace(/\//g,path.sep);
+    let img_url = req.url;
+    //修改图片之后,为了强制刷新图片，会增加时间戳,后台忽略之
+    let p0 = img_url.lastIndexOf('?tm=');
+    if(p0!=-1){
+      img_url = img_url.substring(0,p0);
+    }
+    let fp =  settings.pic_root + img_url.replace(/\//g,path.sep);
     let fpath = decodeURIComponent(fp);
      //先尝试读取缓存
     let data = fsCache.get(fpath);

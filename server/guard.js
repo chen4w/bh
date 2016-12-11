@@ -9,7 +9,7 @@ const settings = require('../settings.js');
 
 const path_tbn = settings.thumbnails_uri + settings.thumbnails_size+path.sep;
 
-function getTbPath(fp){
+export function getTbPath(fp){
     let p0 = fp.lastIndexOf(path.sep);
     if(p0!=-1){
         return settings.pic_root + path.sep+ fp.substring(0,p0+1)+path_tbn+fp.substring(p0+1);
@@ -54,7 +54,8 @@ export function watch() {
         })
         .on('change', fp => {
             cacheFile(getTbPath(fp),function(data){
-                io.emit('added',[fp.replace(/\\/g,'/')]);
+                console.log('emit change:'+fp);
+                io.emit('change',[fp.replace(/\\/g,'/')]);
             });
         })
         .on('unlink', fp => {

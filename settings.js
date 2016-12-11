@@ -41,6 +41,7 @@ class Setting {
     this.port_web = 3000; //web端口
     this.stabilityThreshold = 1000; //监测文件延时,直到此时间(ms)内文件不再增长才触发added消息
     this.cacheSpan = 200; //缓存延时,避免cpu阻塞
+    this.rotateSpan = 100;//旋转图片延时，避免cpu阻塞
 
     this.thumbnails_size=450; //默认的抽点尺寸
     this.thumbnails_uri ='tbnails'; //抽点保留路径名
