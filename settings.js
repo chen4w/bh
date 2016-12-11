@@ -7,8 +7,8 @@ class Setting {
     this.bRegister = true;
     //this.share_only = true;
     //this.host = '172.16.2.72';  //服务的ip地址,用于移动App请求
-    //this.host = '192.168.221.198';
-    this.host = '192.168.1.77';
+    this.host = '192.168.221.198';
+    //this.host = '192.168.1.77';
     //服务端文件目录分隔符,client端无法自动获取服务的 path.sep
     //图片文件根目录
     if(path.sep=='/')
@@ -41,7 +41,7 @@ class Setting {
     this.port_web = 3000; //web端口
     this.stabilityThreshold = 1000; //监测文件延时,直到此时间(ms)内文件不再增长才触发added消息
     this.cacheSpan = 200; //缓存延时,避免cpu阻塞
-    this.rotateSpan = 100;//旋转图片延时，避免cpu阻塞
+    this.rotateSpan = 500;//旋转图片延时，避免cpu阻塞
 
     this.thumbnails_size=450; //默认的抽点尺寸
     this.thumbnails_uri ='tbnails'; //抽点保留路径名

@@ -41,6 +41,7 @@ export function rotatePic(fp,angle,func){
   //fp必须是原始文件路径而非抽点路径
   let buf_src = fsCache.get(fp);
   console.log('fkeys:'+fkeys);
+  //console.log('fp:'+fp+'\n'+buf_src);
   fsCache.del(fkeys,function(){
     gm(buf_src).rotate('green', angle).write(fp,
     function(err, buf) {
@@ -55,7 +56,7 @@ export function rotatePics(pics,angle,pic_pos){
   //到头了
   if(pic_pos>=pics.length)
     return;
-  let fsrc = settings.pic_root+path.sep+pics[pic_pos];      
+  let fsrc = settings.pic_root+path.sep+pics[pic_pos].replace(/\//g,path.sep);      
   rotatePic(fsrc,angle,function(){
     pic_pos+=1;
     if(settings.rotateSpan){
