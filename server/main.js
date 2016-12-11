@@ -28,28 +28,29 @@ export function rotatePic(fp,angle,func){
   //清除抽点文件缓存
   fkeys.push(getTbPath(fp));
 
-  let p00 = fp.indexOf(settings.pic_upload);
-  if(p00!=-1){
-    let p0 = fp.lastIndexOf(path.sep);
-    let fpath_p = path.join(fp.substring(0,p00-1),settings.pic_upload,'p',fp.substring(p0+1));
-    let fpath_n = path.join(fp.substring(0,p00-1),settings.pic_upload,'n',fp.substring(p0+1));
-    fkeys.push(fpath_p);
-    fkeys.push(fpath_n);
-    fkeys.push(getTbPath(fpath_p));
-    fkeys.push(getTbPath(fpath_n));
-  }     
   //fp必须是原始文件路径而非抽点路径
   let buf_src = fsCache.get(fp);
-  console.log('fkeys:'+fkeys);
-  //console.log('fp:'+fp+'\n'+buf_src);
-  fsCache.del(fkeys,function(){
-    gm(buf_src).rotate('green', angle).write(fp,
-    function(err, buf) {
+
+  gm(buf_src).rotate('white', angle).toBuffer(path.extname(fp),
+    function(err,buf){
       if(err){
         console.log(err);
+        return func();
       }
-      func();
-    });
+      //更新原始缓存
+      fsCache.set(fp,buf);
+      //更新抽点缓存
+      let fp_tn = getTbPath(fp);
+      fsCache.del(fp_tn,function(){
+        //更新完缓存再写文件触发，将不再走延时,提高执行性能
+        cacheFile(fp_tn,function(data){
+          //更新原始文件
+          fs.writeFile(fp,buf,(err) => {
+            if (err) console.log(err);
+            func();
+          });          
+        });
+      });
   });
 }
 export function rotatePics(pics,angle,pic_pos){
@@ -75,6 +76,7 @@ export function cacheFile(fpath,func) {
     if(func){
       func(data);
     }
+    console.log('cacheFile hit:'+fpath);
     return;
   }
   if(settings.cacheSpan){
