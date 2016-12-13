@@ -9,7 +9,8 @@ const styles = {
   drop_zone: {
     float: 'left',
     paddingRight: 50,
-    textAlign:'right'
+    display:'inline-block',
+    textAlign:'center'
   },
 dash:{
   border: '0 none',
@@ -77,19 +78,21 @@ export default class Upload extends Component {
     let img_w = w < 450 ? w: 450;
       
         return (
-            <div>
+            <div id="home_nner2">
               <div style={styles.drop_zone}>
                 <Dropzone  ref={(node) => { this.dropzone = node; }} onDrop={this.onDrop.bind(this)}>
                     <div>
-                    <br/>将上传的图片拽到此处<br/>或者点击此处选择图片
+                    <br/><br/>将上传的图片拽到此处<br/>或者点击此处选择图片
                     <br/><br/><br/><br/><hr style={styles.dash}/>
-                    扫描二维码<br/>上传您的作品
+                    <br/>扫描二维码<br/>上传您的作品
                     </div>
                 </Dropzone>
               </div>
+              <div style={{width:200,height:200,margin:0,display:'inline-block'}}>
                 <QRCode value={settings.url_upload || location.href} 
                   size ={200}
                 />
+                </div>
                 {this.state.files.length > 0 ? <div>
                 <h2>{this.state.output}</h2>
                 <div>{this.state.files.map((file,index) => <img width={img_w} key={index} src={file.preview} /> )}</div>

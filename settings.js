@@ -6,9 +6,9 @@ class Setting {
     /**-------必须修改的配置-------**/
     this.bRegister = true;
     //this.share_only = true;
-    //this.host = '172.16.2.72';  //服务的ip地址,用于移动App请求
+    this.host = '172.16.2.250';  //服务的ip地址,用于移动App请求
     //this.host = '192.168.221.198';
-    this.host = '192.168.1.77';
+    //this.host = '192.168.1.77';
     //服务端文件目录分隔符,client端无法自动获取服务的 path.sep
     //图片文件根目录
     if(path.sep=='/')
