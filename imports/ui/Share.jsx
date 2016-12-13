@@ -108,7 +108,7 @@ loadMore(page) {
     }
     let items = [];
     for(var i=0; i<len; i++){
-        let pic = this.state.pics[i];
+        let pic = this.state.pics[i+picPos];
         items.push(
          <div className="effect2" key={i+picPos} >
                 <img width={img_w} src={path_imgsrc+pic.fn} />

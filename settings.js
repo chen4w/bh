@@ -6,9 +6,9 @@ class Setting {
     /**-------必须修改的配置-------**/
     this.bRegister = true;
     //this.share_only = true;
-    this.host = '172.16.2.250';  //服务的ip地址,用于移动App请求
+    //this.host = '172.16.2.250';  //服务的ip地址,用于移动App请求
     //this.host = '192.168.221.198';
-    //this.host = '192.168.1.77';
+    this.host = '192.168.1.77';
     //服务端文件目录分隔符,client端无法自动获取服务的 path.sep
     //图片文件根目录
     if(path.sep=='/')
@@ -31,8 +31,6 @@ class Setting {
     //this.mail_url = 'smtp://chen4w:313wansheng@smtp.163.com'; 
     //this.mail_from = 'chen4w@163.com'; 
 
-    //二维码对应的拍照上传url,如果不设置直接取当前网页location
-    this.url_upload = "http://www.zgdjss.com/unity/vr360/hzmg/tour.html";
     this.share_limit = 5;//社交分享无限滚动每次加载张数
     this.show_limit = 10; //移动终端最多显示的待检查图片数量
 
@@ -54,6 +52,8 @@ class Setting {
     //常用间接设置量,
     this.url_root = 'http://'+this.host+ ':'+this.port_web
       +this.pic_url;
+    //二维码对应的拍照上传url,如果不设置直接取当前网页location
+    this.url_upload = 'http://'+this.host+ ':'+this.port_web+'/shoot';
     //this.sn_md5 = crypto.createHash('md5').update(this.sn).digest("hex");
     //console.log('sn:'+this.sn+' md5:'+this.sn_md5);
       
